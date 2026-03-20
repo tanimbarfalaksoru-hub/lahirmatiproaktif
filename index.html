@@ -16,147 +16,236 @@
             --primary: #1E3A8A;
             --primary-light: #3B82F6;
             --accent: #10B981;
-            --bg: #F3F4F6;
+            --bg-color: #f4f7f6;
             --text-main: #1F2937;
             --text-muted: #6B7280;
-            --surface: rgba(255, 255, 255, 0.7);
-            --border: rgba(255, 255, 255, 0.4);
-            --radius: 16px;
+            --surface: rgba(255, 255, 255, 0.75);
+            --border: rgba(255, 255, 255, 0.6);
+            --radius: 20px;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --shadow-hover: 0 15px 50px -10px rgba(30, 58, 138, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         body { 
-            background: var(--bg); color: var(--text-main); line-height: 1.6; 
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(217,100%,92%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, hsla(160,100%,90%,1) 0, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main); line-height: 1.6; 
             overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; 
         }
 
-        /* Glassmorphism */
+        /* Glassmorphism Premium */
         .glass {
             background: var(--surface);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border); border-radius: var(--radius);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: rgba(255,255,255,0.9);
         }
 
         /* Navbar */
         nav {
             position: sticky; top: 0; width: 100%; z-index: 1000;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 1rem 5%; background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem 5%; background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(255,255,255,0.5);
         }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .nav-links { display: flex; gap: 20px; list-style: none; padding: 0; margin: 0; }
-        .nav-links li a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: 0.3s; cursor: pointer; }
-        .nav-links li a:hover, .nav-links li a.active { color: var(--primary); }
-        .btn-auth { background: var(--primary); color: white; padding: 8px 20px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; transition: 0.3s; }
-        .btn-auth:hover { background: var(--primary-light); }
-        .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .logo { font-size: 1.4rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; letter-spacing: -0.5px;}
+        .logo span { font-size: 1.8rem; color: var(--primary-light); }
+        
+        .nav-links { display: flex; gap: 25px; list-style: none; padding: 0; margin: 0; align-items: center;}
+        .nav-links li a { position: relative; text-decoration: none; color: var(--text-muted); font-weight: 500; font-size: 0.95rem; transition: 0.3s; cursor: pointer; }
+        .nav-links li a::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 0;
+            background-color: var(--primary-light); transition: width 0.3s ease;
+        }
+        .nav-links li a:hover { color: var(--primary); }
+        .nav-links li a:hover::after, .nav-links li a.active::after { width: 100%; }
+        .nav-links li a.active { color: var(--primary); font-weight: 600; }
+        
+        .btn-auth { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; padding: 8px 24px; border-radius: 30px; border: none; cursor: pointer; 
+            font-weight: 500; font-size: 0.95rem; transition: all 0.3s ease; 
+            box-shadow: 0 4px 15px rgba(30, 58, 138, 0.2);
+        }
+        .btn-auth:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(30, 58, 138, 0.3); }
+        
+        .menu-toggle { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--primary); }
 
-        @media(max-width: 850px) {
-            .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: white; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-            .nav-links.active { display: flex; }
+        /* Responsive Navbar */
+        @media(max-width: 900px) {
+            .nav-links { 
+                display: none; flex-direction: column; position: absolute; top: 70px; left: 5%; width: 90%; 
+                background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 20px; 
+                border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.5);
+                gap: 15px;
+            }
+            .nav-links.active { display: flex; animation: slideDown 0.3s ease; }
             .menu-toggle { display: block; }
         }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Layout */
-        main { padding: 2rem 5%; flex: 1; }
-        .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        /* Layout & Typography */
+        main { padding: 3rem 5%; flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .page-section { display: none; animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1, h2 { color: var(--primary); margin-bottom: 1rem; line-height: 1.2; }
+        h1 { font-size: 2.2rem; color: var(--primary); margin-bottom: 0.5rem; letter-spacing: -0.5px; font-weight: 700; }
+        h2 { font-size: 1.5rem; color: var(--primary); margin-bottom: 1rem; font-weight: 600; }
+        h3 { font-size: 1.2rem; color: var(--text-main); font-weight: 600; }
         .text-center { text-align: center; }
         .text-muted { color: var(--text-muted); }
+        .section-desc { max-width: 700px; margin: 0 auto 2.5rem; font-size: 1rem; color: var(--text-muted); line-height: 1.7; }
         
-        /* Grid & Cards */
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+        /* Dashboard Cards */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+        .card { padding: 1.8rem; display: flex; flex-direction: column; gap: 10px; justify-content: space-between;}
         .card-header { display: flex; justify-content: space-between; align-items: center; }
-        .card-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; background: rgba(30, 58, 138, 0.1); color: var(--primary); font-size: 1.8rem; }
-        .card h3 { font-size: 2rem; margin: 0; color: var(--text-main); }
-        .card p { font-size: 0.9rem; margin: 0; }
+        .card-icon { width: 55px; height: 55px; border-radius: 14px; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(30, 58, 138, 0.05)); color: var(--primary-light); font-size: 2rem; box-shadow: inset 0 2px 5px rgba(255,255,255,0.5);}
+        .card h3 { font-size: 2.2rem; margin: 5px 0 0; color: var(--primary); font-weight: 700; line-height: 1;}
+        .card p { font-size: 0.95rem; margin: 0; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
 
         /* Forms */
-        .form-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .form-container { max-width: 850px; margin: 0 auto; padding: 2.5rem; }
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.2rem; }
         .form-group.full { grid-column: 1 / -1; }
-        label { font-size: 0.9rem; font-weight: 500; }
-        input, select, textarea { padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background: rgba(255,255,255,0.8); outline: none; transition: 0.3s; width: 100%; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
-        input[readonly] { background: #e5e7eb; cursor: not-allowed; }
+        label { font-size: 0.95rem; font-weight: 500; color: var(--text-main); }
         
-        .btn-submit { background: var(--primary); color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .btn-submit:hover { background: var(--primary-light); }
-        .btn-submit:disabled { background: var(--text-muted); cursor: not-allowed; }
+        input, select, textarea { 
+            padding: 14px 18px; border: 1.5px solid rgba(0,0,0,0.08); border-radius: 12px; 
+            font-size: 1rem; background: rgba(255,255,255,0.9); outline: none; 
+            transition: all 0.3s ease; width: 100%; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        input:focus, select:focus, textarea:focus { 
+            border-color: var(--primary-light); background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); 
+        }
+        input[readonly] { background: rgba(229, 231, 235, 0.5); cursor: not-allowed; color: var(--text-muted); }
+        
+        .btn-submit { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
+            color: white; padding: 14px 24px; border: none; border-radius: 12px; 
+            font-size: 1.05rem; font-weight: 600; cursor: pointer; width: 100%; 
+            transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 10px; 
+            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.2); letter-spacing: 0.5px;
+        }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(30, 58, 138, 0.3); }
+        .btn-submit:active { transform: translateY(0); }
+        .btn-submit:disabled { background: #9CA3AF; cursor: not-allowed; box-shadow: none; transform: none;}
 
-        .file-upload-wrapper { border: 2px dashed #ccc; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.5); }
-        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(30, 58, 138, 0.05); }
+        .file-upload-wrapper { 
+            border: 2px dashed rgba(59, 130, 246, 0.4); border-radius: 16px; padding: 2.5rem; 
+            text-align: center; cursor: pointer; transition: all 0.3s ease; 
+            background: rgba(255,255,255,0.6); 
+        }
+        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(59, 130, 246, 0.05); }
         .file-upload-wrapper input[type="file"] { display: none; }
-        .file-info { font-size: 0.85rem; color: #ef4444; margin-top: 10px; display: block; }
+        .file-upload-wrapper .material-symbols-outlined { font-size: 3.5rem; color: var(--primary-light); margin-bottom: 10px; transition: transform 0.3s;}
+        .file-upload-wrapper:hover .material-symbols-outlined { transform: translateY(-5px); }
+        .file-info { font-size: 0.85rem; color: #ef4444; margin-top: 10px; display: block; font-style: italic;}
 
         /* Timeline */
-        .timeline { display: flex; flex-direction: column; gap: 20px; position: relative; padding-left: 30px; }
-        .timeline::before { content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--primary-light); }
-        .tl-item { position: relative; }
-        .tl-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 0 0 2px var(--primary-light); }
-        .tl-item h4 { margin-bottom: 5px; }
+        .timeline { display: flex; flex-direction: column; gap: 25px; position: relative; padding-left: 35px; margin-top: 2rem;}
+        .timeline::before { content: ''; position: absolute; left: 14px; top: 5px; bottom: 5px; width: 3px; background: linear-gradient(to bottom, var(--primary-light), var(--accent)); border-radius: 3px;}
+        .tl-item { position: relative; background: rgba(255,255,255,0.5); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); transition: 0.3s;}
+        .tl-item:hover { background: rgba(255,255,255,0.8); box-shadow: var(--shadow-soft); transform: translateX(5px);}
+        .tl-item::before { content: ''; position: absolute; left: -28px; top: 20px; width: 18px; height: 18px; border-radius: 50%; background: white; border: 4px solid var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); }
+        .tl-item h4 { margin-bottom: 5px; color: var(--primary); font-size: 1.1rem;}
 
         /* Tables & UI */
-        .table-responsive { overflow-x: auto; width: 100%; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: rgba(30, 58, 138, 0.05); color: var(--primary); font-weight: 600; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
-        .badge.menunggu { background: #fef3c7; color: #d97706; }
-        .badge.diproses { background: #dbeafe; color: #1e40af; }
-        .badge.selesai { background: #d1fae5; color: #065f46; }
+        .table-responsive { overflow-x: auto; width: 100%; border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 800px;}
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 0.95rem;}
+        th { background: rgba(30, 58, 138, 0.03); color: var(--primary); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;}
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.8); }
+        
+        .badge { padding: 6px 12px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; display: inline-block; text-align: center;}
+        .badge.menunggu { background: #FEF3C7; color: #D97706; border: 1px solid #FDE68A;}
+        .badge.diproses { background: #DBEAFE; color: #1D4ED8; border: 1px solid #BFDBFE;}
+        .badge.selesai { background: #D1FAE5; color: #059669; border: 1px solid #A7F3D0;}
 
-        .alert-box { padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
-        .alert-info { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
-        .alert-warning { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .alert-box { padding: 16px 20px; border-radius: 12px; margin-bottom: 20px; display: flex; gap: 12px; align-items: flex-start; line-height: 1.5;}
+        .alert-info { background: #F0F9FF; color: #0369A1; border: 1px solid #BAE6FD; }
+        .alert-warning { background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A; }
 
-        .chart-wrapper { position: relative; height: 300px; width: 100%; display: flex; justify-content: center; margin-top: 10px; }
+        .chart-wrapper { position: relative; height: 320px; width: 100%; display: flex; justify-content: center; margin-top: 15px; }
 
-        /* Responsive */
-        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .checkbox-wrapper { display: flex; flex-direction: row; align-items: flex-start; gap: 10px; margin-top: 15px; }
-        .checkbox-wrapper input[type="checkbox"] { flex-shrink: 0; margin-top: 3px; width: 20px; height: 20px; }
-        .search-bar-wrapper { display: flex; gap: 10px; margin-bottom: 2rem; }
-        .result-card { display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 15px; padding: 15px; }
+        /* Helpers */
+        .search-bar-wrapper { display: flex; gap: 15px; margin-bottom: 2.5rem; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 16px; border: 1px solid var(--border);}
+        .search-bar-wrapper input { border: none; box-shadow: none; background: transparent;}
+        .search-bar-wrapper button { margin: 0; border-radius: 10px; padding: 12px 30px;}
+        
+        .result-card { display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 15px; padding: 20px; }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+        .checkbox-wrapper { display: flex; flex-direction: row; align-items: flex-start; gap: 12px; margin-top: 15px; background: rgba(255,255,255,0.5); padding: 15px; border-radius: 12px;}
+        .checkbox-wrapper input[type="checkbox"] { flex-shrink: 0; margin-top: 3px; width: 22px; height: 22px; accent-color: var(--primary);}
 
-        @media(max-width: 768px) {
-            .form-grid, .contact-grid { grid-template-columns: 1fr; }
+        /* Responsive Breakpoints */
+        @media(max-width: 900px) {
+            .form-grid, .contact-grid { grid-template-columns: 1fr; gap: 1rem;}
+            main { padding: 2rem 5%; }
         }
+        
         @media(max-width: 600px) {
-            .search-bar-wrapper { flex-direction: column; }
-            .search-bar-wrapper button { width: 100% !important; }
-            .result-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.3rem; }
+            .section-desc { font-size: 0.9rem; margin-bottom: 1.5rem;}
+            .form-container { padding: 1.8rem 1.2rem; }
+            
+            .search-bar-wrapper { flex-direction: column; background: transparent; padding: 0; border: none;}
+            .search-bar-wrapper input { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+            .search-bar-wrapper button { width: 100% !important; padding: 14px;}
+            
+            .result-card { flex-direction: column; align-items: flex-start; gap: 15px; }
             .result-card > div:last-child { align-self: flex-start; }
-            .form-container { padding: 1.5rem 1rem; }
+            
             .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
             .chart-wrapper { height: 250px; }
-            .card h3 { font-size: 1.5rem; }
+            
+            .card { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between;}
+            .card-header { width: 100%; }
+            .card h3 { font-size: 1.8rem; }
             .card-icon { width: 45px; height: 45px; font-size: 1.5rem; }
+            
+            .timeline { padding-left: 25px; }
+            .timeline::before { left: 9px; }
+            .tl-item::before { left: -22px; width: 14px; height: 14px; top: 22px;}
+            .tl-item { padding: 1.2rem; }
         }
 
-        /* Overlays */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; display: none; backdrop-filter: blur(5px); }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        /* Overlays & Modals */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.85); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; display: none; backdrop-filter: blur(8px); }
+        .spinner { border: 4px solid rgba(59, 130, 246, 0.2); border-top: 4px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        #toast { position: fixed; bottom: -100px; right: 20px; background: var(--text-main); color: white; padding: 15px 25px; border-radius: 8px; display: flex; align-items: center; gap: 10px; transition: 0.4s; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        #toast.show { bottom: 20px; }
-        #toast.success { border-left: 5px solid var(--accent); }
-        #toast.error { border-left: 5px solid #ef4444; }
+        #toast { position: fixed; bottom: -100px; right: 20px; background: var(--text-main); color: white; padding: 16px 24px; border-radius: 12px; display: flex; align-items: center; gap: 12px; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 10000; box-shadow: 0 10px 40px rgba(0,0,0,0.3); font-weight: 500;}
+        #toast.show { bottom: 30px; }
+        #toast.success { border-left: 6px solid var(--accent); }
+        #toast.error { border-left: 6px solid #ef4444; }
 
-        #loginModal, #registerModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); display: none; }
-        .login-box { width: 90%; max-width: 400px; padding: 2rem; text-align: center; max-height: 90vh; overflow-y: auto; }
-        .link-text { color: var(--primary); cursor: pointer; text-decoration: underline; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
+        #loginModal, #registerModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.3s;}
+        #loginModal.show, #registerModal.show { opacity: 1; }
         
-        footer { text-align: center; padding: 1.5rem 5%; font-size: 0.85rem; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); }
+        .login-box { width: 90%; max-width: 420px; padding: 2.5rem 2rem; text-align: center; max-height: 90vh; overflow-y: auto; background: rgba(255, 255, 255, 0.95); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);}
+        .link-text { color: var(--primary); cursor: pointer; font-size: 0.95rem; margin-top: 15px; display: inline-block; font-weight: 500; transition: 0.3s;}
+        .link-text:hover { color: var(--primary-light); text-decoration: underline;}
+        
+        footer { text-align: center; padding: 1.5rem 5%; font-size: 0.9rem; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(10px); color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;}
     </style>
 </head>
 <body>
@@ -164,7 +253,7 @@
     <!-- Navbar -->
     <nav>
         <div class="logo"><span class="material-symbols-outlined">health_and_safety</span>Lahir Mati Pro Aktif</div>
-        <button class="menu-toggle" onclick="toggleMenu()"><span class="material-symbols-outlined">menu</span></button>
+        <button class="menu-toggle" onclick="toggleMenu()"><span class="material-symbols-outlined">menu_open</span></button>
         <ul class="nav-links" id="navLinks">
             <li><a class="active" onclick="navigate('dashboard')">Dashboard</a></li>
             <li><a onclick="navigate('prosedur')">Prosedur</a></li>
@@ -173,7 +262,7 @@
             <li><a onclick="navigate('tentang')">Tentang Kami</a></li>
             <li><a onclick="navigate('kontak')">Kontak</a></li>
             <li id="navAdmin" style="display:none;"><a onclick="navigate('admin')">Admin Panel</a></li>
-            <li><button class="btn-auth" id="btnAuth" onclick="showLogin()">Login</button></li>
+            <li><button class="btn-auth" id="btnAuth" onclick="showLogin()">Masuk Akses</button></li>
         </ul>
     </nav>
 
@@ -181,16 +270,39 @@
     <main>
         <!-- DASHBOARD -->
         <section id="dashboard" class="page-section active">
-            <h1 class="text-center">Dashboard Lahir Mati Pro Aktif</h1>
-            <p class="text-center text-muted" style="margin-bottom: 2rem;">Pusat kendali inovatif untuk memonitor layanan kependudukan secara real-time. Transparan, cepat, dan efisien.</p>
+            <h1 class="text-center">Dashboard Kependudukan Terpadu</h1>
+            <p class="text-center section-desc">Pusat kendali inovatif untuk memonitor layanan kependudukan secara real-time. Menghadirkan layanan yang transparan, cepat, dan efisien untuk masyarakat.</p>
+            
             <div class="grid-3">
-                <div class="card glass"><div class="card-header"><div><p>Total Pengajuan</p><h3 id="statTotal">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">folder_open</span></div></div></div>
-                <div class="card glass"><div class="card-header"><div><p>Akta Kelahiran</p><h3 id="statKelahiran">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">child_care</span></div></div></div>
-                <div class="card glass"><div class="card-header"><div><p>Akta Kematian</p><h3 id="statKematian">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">church</span></div></div></div>
+                <div class="card glass glass-card">
+                    <div class="card-header">
+                        <div><p>Total Pengajuan</p><h3 id="statTotal">-</h3></div>
+                        <div class="card-icon"><span class="material-symbols-outlined">folder_open</span></div>
+                    </div>
+                </div>
+                <div class="card glass glass-card">
+                    <div class="card-header">
+                        <div><p>Akta Kelahiran</p><h3 id="statKelahiran">-</h3></div>
+                        <div class="card-icon"><span class="material-symbols-outlined">child_care</span></div>
+                    </div>
+                </div>
+                <div class="card glass glass-card">
+                    <div class="card-header">
+                        <div><p>Akta Kematian</p><h3 id="statKematian">-</h3></div>
+                        <div class="card-icon"><span class="material-symbols-outlined">church</span></div>
+                    </div>
+                </div>
             </div>
+            
             <div class="form-grid">
-                <div class="card glass" style="grid-column: 1;"><h2>Grafik Per Jenis</h2><div class="chart-wrapper"><canvas id="chartJenis"></canvas></div></div>
-                <div class="card glass" style="grid-column: 2;"><h2>Status Progres</h2><div class="chart-wrapper"><canvas id="chartStatus"></canvas></div></div>
+                <div class="card glass glass-card" style="grid-column: 1;">
+                    <h2>Grafik Per Jenis Dokumen</h2>
+                    <div class="chart-wrapper"><canvas id="chartJenis"></canvas></div>
+                </div>
+                <div class="card glass glass-card" style="grid-column: 2;">
+                    <h2>Status Progres Pengajuan</h2>
+                    <div class="chart-wrapper"><canvas id="chartStatus"></canvas></div>
+                </div>
             </div>
         </section>
 
@@ -198,12 +310,25 @@
         <section id="prosedur" class="page-section">
             <div class="form-container glass">
                 <h1 class="text-center">Perjalanan Dokumen Anda</h1>
-                <p class="text-center" style="margin-bottom: 2rem;">Kami merancang proses pengajuan yang ringkas dan proaktif agar layanan administrasi kependudukan menjadi lebih bermakna dan mempermudah masyarakat.</p>
+                <p class="text-center section-desc">Kami merancang alur pengajuan yang ringkas dan proaktif agar proses administrasi kependudukan menjadi lebih bermakna dan mempermudah masyarakat dari hulu ke hilir.</p>
+                
                 <div class="timeline">
-                    <div class="tl-item"><h4>1. Input Data</h4><p class="text-muted">Petugas kesehatan login dan mengisi formulir data kelahiran, kematian, atau lahir mati secara akurat.</p></div>
-                    <div class="tl-item"><h4>2. Upload Dokumen</h4><p class="text-muted">Unggah dokumen pendukung (KTP, KK, Surat Keterangan Dokter/Bidan) yang telah digabung dalam 1 file PDF.</p></div>
-                    <div class="tl-item"><h4>3. Verifikasi Admin</h4><p class="text-muted">Admin Disdukcapil akan memverifikasi kesesuaian data dan dokumen pendukung.</p></div>
-                    <div class="tl-item"><h4>4. Penerbitan Dokumen</h4><p class="text-muted">Jika disetujui, Akta akan diterbitkan dan status pengajuan akan berubah menjadi 'Selesai'.</p></div>
+                    <div class="tl-item">
+                        <h4>1. Input Data oleh Petugas</h4>
+                        <p class="text-muted">Petugas kesehatan yang berwenang login dan mengisi formulir pelaporan data kelahiran, kematian, atau lahir mati secara akurat di fasilitas kesehatan.</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4>2. Unggah Dokumen Bukti</h4>
+                        <p class="text-muted">Mengunggah dokumen pendukung (seperti KTP, KK, Surat Keterangan Dokter/Bidan asli berwarna) yang telah digabung dalam 1 file PDF.</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4>3. Verifikasi Real-Time</h4>
+                        <p class="text-muted">Administrator Disdukcapil akan langsung menerima notifikasi dan memverifikasi kesesuaian data dengan dokumen pendukung secara digital.</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4>4. Penerbitan Dokumen Resmi</h4>
+                        <p class="text-muted">Jika seluruh persyaratan terpenuhi dan disetujui, Akta akan diterbitkan dan status pengajuan akan berubah menjadi 'Selesai'.</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -211,43 +336,97 @@
         <!-- FORM PENGAJUAN -->
         <section id="pengajuan" class="page-section">
             <div class="form-container glass">
-                <h1>Formulir Layanan Pro Aktif</h1>
-                <p class="text-muted" style="margin-bottom: 15px;">Mulai langkah kebaikan Anda di sini. Lengkapi data pemohon dengan cermat untuk memastikan penerbitan dokumen berjalan lancar tanpa hambatan.</p>
-                <div class="alert-box alert-warning"><span class="material-symbols-outlined">info</span><div>Form ini hanya dapat diisi oleh Petugas Kesehatan yang telah login.</div></div>
+                <h1 class="text-center">Formulir Layanan Pro Aktif</h1>
+                <p class="text-center section-desc" style="margin-bottom: 2rem;">Mulai langkah kepedulian Anda di sini. Lengkapi data pemohon dengan cermat untuk memastikan penerbitan dokumen berjalan lancar tanpa hambatan.</p>
+                
+                <div class="alert-box alert-warning">
+                    <span class="material-symbols-outlined">admin_panel_settings</span>
+                    <div><strong>Akses Terbatas:</strong> Formulir ini hanya dapat diisi oleh Petugas Kesehatan yang telah terdaftar dan login.</div>
+                </div>
+                
                 <form id="formAdminduk" onsubmit="submitForm(event)">
-                    <h3>A. Data Petugas (Otomatis)</h3>
-                    <div class="form-grid" style="margin-top: 10px; margin-bottom: 20px;">
-                        <div class="form-group"><label>Nama Petugas</label><input type="text" id="p_nama" readonly></div>
-                        <div class="form-group"><label>Email</label><input type="text" id="p_email" readonly></div>
-                        <div class="form-group"><label>No HP</label><input type="text" id="p_hp" readonly></div>
-                        <div class="form-group"><label>Kecamatan Faskes</label><input type="text" id="p_kec" readonly></div>
+                    <div style="background: rgba(255,255,255,0.4); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">badge</span> A. Data Petugas Pelapor</h3>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Nama Petugas</label><input type="text" id="p_nama" readonly></div>
+                            <div class="form-group"><label>Email Petugas</label><input type="text" id="p_email" readonly></div>
+                            <div class="form-group"><label>No HP / WhatsApp</label><input type="text" id="p_hp" readonly></div>
+                            <div class="form-group"><label>Kecamatan Faskes</label><input type="text" id="p_kec" readonly></div>
+                        </div>
                     </div>
-                    <h3>B. Data Pengajuan</h3>
-                    <div class="form-grid" style="margin-top: 10px;">
-                        <div class="form-group full"><label>Jenis Dokumen *</label><select id="f_jenis" required><option value="">-- Pilih Jenis --</option><option value="Akta Kelahiran">Akta Kelahiran</option><option value="Akta Kematian">Akta Kematian</option><option value="Lahir Mati">Lahir Mati</option></select></div>
-                        <div class="form-group full"><label>Nama Pemohon / Bayi / Jenazah *</label><input type="text" id="f_nama" required placeholder="Masukkan nama lengkap"></div>
-                        <div class="form-group"><label>Tempat Lahir *</label><input type="text" id="f_tempat_lahir" required></div>
-                        <div class="form-group"><label>Tanggal Lahir / Kematian *</label><input type="date" id="f_tanggal" required></div>
-                        <div class="form-group"><label>Jenis Kelamin *</label><select id="f_jk" required><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
-                        <div class="form-group"></div>
-                        <div class="form-group"><label>Nama Ibu Kandung *</label><input type="text" id="f_ibu" required></div>
-                        <div class="form-group"><label>Nama Ayah Kandung</label><input type="text" id="f_ayah" placeholder="Boleh dikosongkan jika tidak ada"></div>
-                        <div class="form-group"><label>Kecamatan Domisili *</label><select id="f_alamat_kec" required><option value="">-- Pilih Kecamatan --</option><option value="Tanimbar Selatan">Tanimbar Selatan</option><option value="Selaru">Selaru</option><option value="Wertamrian">Wertamrian</option><option value="Wermaktian">Wermaktian</option><option value="Tanimbar Utara">Tanimbar Utara</option><option value="Fordata">Fordata</option><option value="Wuarlabobar">Wuarlabobar</option><option value="Kormomolin">Kormomolin</option><option value="Nirunmas">Nirunmas</option><option value="Molumaru">Molumaru</option></select></div>
-                        <div class="form-group"><label>Desa/Kelurahan *</label><input type="text" id="f_alamat_desa" required></div>
-                        <div class="form-group full"><label>RT / RW *</label><input type="text" id="f_rtrw" required placeholder="Contoh: 001 / 002"></div>
+
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">description</span> B. Rincian Pengajuan</h3>
+                    <div class="form-grid" style="margin-bottom: 2rem;">
+                        <div class="form-group full">
+                            <label>Jenis Dokumen yang Diajukan <span style="color:red">*</span></label>
+                            <select id="f_jenis" required>
+                                <option value="" disabled selected>-- Pilih Jenis Dokumen --</option>
+                                <option value="Akta Kelahiran">Akta Kelahiran</option>
+                                <option value="Akta Kematian">Akta Kematian</option>
+                                <option value="Lahir Mati">Lahir Mati</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label>Nama Lengkap Pemohon / Bayi / Jenazah <span style="color:red">*</span></label>
+                            <input type="text" id="f_nama" required placeholder="Masukkan nama lengkap sesuai identitas">
+                        </div>
+                        <div class="form-group"><label>Tempat Lahir <span style="color:red">*</span></label><input type="text" id="f_tempat_lahir" required placeholder="Contoh: Saumlaki"></div>
+                        <div class="form-group"><label>Tanggal Lahir / Kematian <span style="color:red">*</span></label><input type="date" id="f_tanggal" required></div>
+                        <div class="form-group">
+                            <label>Jenis Kelamin <span style="color:red">*</span></label>
+                            <select id="f_jk" required>
+                                <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
+                                <option value="Laki-laki">Laki-laki</option>
+                                <option value="Perempuan">Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="form-group"></div> <!-- Spacer -->
+                        
+                        <div class="form-group"><label>Nama Ibu Kandung <span style="color:red">*</span></label><input type="text" id="f_ibu" required placeholder="Nama lengkap ibu"></div>
+                        <div class="form-group"><label>Nama Ayah Kandung</label><input type="text" id="f_ayah" placeholder="Kosongkan jika tidak ada/tidak diketahui"></div>
+                        
+                        <div class="form-group full" style="border-top: 1px solid var(--border); margin-top: 10px; padding-top: 15px;">
+                            <label style="color: var(--primary); margin-bottom: 5px;">Alamat Domisili</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Kecamatan <span style="color:red">*</span></label>
+                            <select id="f_alamat_kec" required>
+                                <option value="" disabled selected>-- Pilih Kecamatan --</option>
+                                <option value="Tanimbar Selatan">Tanimbar Selatan</option>
+                                <option value="Selaru">Selaru</option>
+                                <option value="Wertamrian">Wertamrian</option>
+                                <option value="Wermaktian">Wermaktian</option>
+                                <option value="Tanimbar Utara">Tanimbar Utara</option>
+                                <option value="Fordata">Fordata</option>
+                                <option value="Wuarlabobar">Wuarlabobar</option>
+                                <option value="Kormomolin">Kormomolin</option>
+                                <option value="Nirunmas">Nirunmas</option>
+                                <option value="Molumaru">Molumaru</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Desa/Kelurahan <span style="color:red">*</span></label><input type="text" id="f_alamat_desa" required placeholder="Nama Desa"></div>
+                        <div class="form-group full"><label>RT / RW <span style="color:red">*</span></label><input type="text" id="f_rtrw" required placeholder="Contoh: 001 / 002"></div>
                     </div>
-                    <h3 style="margin-top: 20px;">C. Upload Dokumen</h3>
+
+                    <h3 style="color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;"><span class="material-symbols-outlined">cloud_upload</span> C. Berkas Pendukung</h3>
                     <div class="form-group full">
-                        <label>Dokumen Pendukung (Jadikan 1 file PDF) *</label>
                         <div class="file-upload-wrapper" onclick="document.getElementById('f_file').click()">
-                            <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--primary);">upload_file</span>
-                            <p id="file-label">Klik untuk memilih file PDF (Max 2MB)</p>
+                            <span class="material-symbols-outlined">upload_file</span>
+                            <h4 style="color: var(--primary); margin-bottom: 5px;">Unggah Dokumen (Wajib PDF)</h4>
+                            <p id="file-label" style="color: var(--text-muted); font-size: 0.95rem;">Klik area ini untuk memilih file (Maks 2MB)</p>
                             <input type="file" id="f_file" accept=".pdf" required onchange="handleFile(this)">
                         </div>
-                        <span class="file-info">"Pastikan dokumen adalah foto asli (berwarna), bukan hasil fotokopi."</span>
+                        <span class="file-info">* Pastikan dokumen yang discan adalah dokumen asli berwarna (bukan fotokopi hitam putih) dan digabung menjadi 1 file PDF.</span>
                     </div>
-                    <div class="form-group full checkbox-wrapper"><input type="checkbox" id="f_snk" required><label for="f_snk">Saya menyatakan bahwa data dan dokumen yang diinput adalah benar dan sah.</label></div>
-                    <button type="submit" class="btn-submit" id="btnSubmitForm"><span class="material-symbols-outlined">send</span> Kirim Pengajuan</button>
+                    
+                    <div class="form-group full checkbox-wrapper">
+                        <input type="checkbox" id="f_snk" required>
+                        <label for="f_snk" style="line-height: 1.5; font-size: 0.95rem;">Saya dengan sadar menyatakan bahwa seluruh data yang diinput dan dokumen yang diunggah adalah <strong>benar, sah, dan dapat dipertanggungjawabkan</strong> secara hukum.</label>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" id="btnSubmitForm" style="margin-top: 10px;">
+                        Kirim Pengajuan Dokumen <span class="material-symbols-outlined" style="font-size: 1.2rem;">send</span>
+                    </button>
                 </form>
             </div>
         </section>
@@ -255,47 +434,93 @@
         <!-- CEK STATUS -->
         <section id="cek-status" class="page-section">
             <div class="form-container glass">
-                <h1 class="text-center">Lacak Dokumen Anda</h1>
-                <p class="text-center" style="margin-bottom: 2rem;">Pantau setiap tahapan proses dokumen secara mudah dengan memasukkan Nomor Pengajuan (REQ) atau Nama Pemohon.</p>
+                <h1 class="text-center">Lacak Status Dokumen</h1>
+                <p class="text-center section-desc">Pantau progres pengajuan Anda secara *real-time* dan transparan. Cukup masukkan Nomor Register (REQ) atau Nama Pemohon pada kolom di bawah ini.</p>
+                
                 <div class="search-bar-wrapper">
-                    <input type="text" id="searchQuery" placeholder="Cari ID / Nama..." style="flex: 1;">
-                    <button class="btn-submit" style="width: auto;" onclick="cariStatus()">Cari</button>
+                    <input type="text" id="searchQuery" placeholder="Contoh: REQ-12345 atau Nama Pemohon..." style="flex: 1; padding: 14px 20px;">
+                    <button class="btn-submit" style="width: auto; padding: 12px 35px;" onclick="cariStatus()"><span class="material-symbols-outlined">search</span> Cari</button>
                 </div>
-                <div id="hasilPencarian"></div>
+                
+                <div id="hasilPencarian">
+                    <!-- Hasil render pencarian -->
+                    <div style="text-align: center; padding: 3rem 0; color: var(--text-muted); opacity: 0.7;">
+                        <span class="material-symbols-outlined" style="font-size: 4rem; margin-bottom: 10px;">manage_search</span>
+                        <p>Hasil pelacakan akan tampil di sini</p>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- TENTANG KAMI -->
         <section id="tentang" class="page-section">
             <div class="form-container glass">
-                <h1>Mengenal Lahir Mati Pro Aktif</h1>
-                <p>Lebih dari sekadar aplikasi, <strong>Lahir Mati Pro Aktif</strong> adalah wujud nyata kepedulian kami menghadirkan layanan administrasi kependudukan yang menyentuh langsung denyut nadi masyarakat di fasilitas kesehatan. Kami percaya bahwa setiap siklus kehidupan berharga dan berhak dicatat dengan mudah.</p>
-                <h3 style="margin-top: 20px;">Visi Kami</h3><p>Mewujudkan kepastian hukum dan kebahagiaan masyarakat melalui pencatatan sipil yang responsif, proaktif, dan terintegrasi penuh.</p>
-                <h3 style="margin-top: 20px;">Misi Kami</h3>
-                <ul style="margin-left: 20px;">
-                    <li>Menjemput bola dengan sistem pelaporan langsung dari titik pelayanan kesehatan.</li>
-                    <li>Membangun ekosistem data yang akurat, aman, dan dapat diandalkan.</li>
-                    <li>Menghapus birokrasi berbelit dengan inovasi digital yang ramah pengguna.</li>
-                </ul>
+                <h1 class="text-center">Mengenal Lahir Mati Pro Aktif</h1>
+                <p class="text-center section-desc">Inovasi pelayanan publik cerdas yang menjembatani kebutuhan administrasi kependudukan masyarakat dengan fasilitator kesehatan secara langsung.</p>
+                
+                <div style="margin-top: 2rem;">
+                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; text-align: justify;">
+                        Lebih dari sekadar aplikasi digital, <strong>Lahir Mati Pro Aktif</strong> adalah wujud nyata kepedulian pemerintah daerah dalam menghadirkan layanan yang menyentuh langsung denyut nadi masyarakat di fasilitas kesehatan. Kami percaya bahwa setiap siklus kehidupan—baik kelahiran maupun kedukaan—sangatlah berharga dan berhak dicatat secara terhormat tanpa membebani keluarga dengan birokrasi yang panjang.
+                    </p>
+                    
+                    <div class="grid-3" style="grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 0;">
+                        <div class="card glass glass-card" style="padding: 2rem; justify-content: flex-start;">
+                            <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--primary-light); margin-bottom: 15px;">visibility</span>
+                            <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.5rem;">Visi Kami</h3>
+                            <p style="text-transform: none; color: var(--text-main); font-size: 0.95rem; line-height: 1.7;">Mewujudkan kepastian hukum dan kebahagiaan sejati bagi masyarakat melalui ekosistem pencatatan sipil yang responsif, proaktif, dan terintegrasi penuh.</p>
+                        </div>
+                        <div class="card glass glass-card" style="padding: 2rem; justify-content: flex-start;">
+                            <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;">rocket_launch</span>
+                            <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.5rem;">Misi Kami</h3>
+                            <ul style="margin-left: 20px; font-size: 0.95rem; line-height: 1.6; color: var(--text-main);">
+                                <li style="margin-bottom: 8px;">Menjemput bola dengan sistem pelaporan dari titik layanan kesehatan.</li>
+                                <li style="margin-bottom: 8px;">Membangun pangkalan data yang akurat, aman, dan mutakhir.</li>
+                                <li>Memangkas rantai birokrasi berbelit lewat inovasi digital ramah pengguna.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- KONTAK -->
         <section id="kontak" class="page-section">
             <div class="form-container glass">
-                <h1>Kami Siap Mendengar</h1>
-                <p class="text-muted" style="margin-bottom: 20px;">Ada pertanyaan, masukan, atau butuh panduan teknis? Tim Lahir Mati Pro Aktif selalu antusias mendampingi Anda.</p>
+                <h1 class="text-center">Kami Siap Mendengar Anda</h1>
+                <p class="text-center section-desc" style="margin-bottom: 3rem;">Punya pertanyaan, kritik konstruktif, atau membutuhkan panduan teknis? Tim dukungan Lahir Mati Pro Aktif selalu antusias mendampingi Anda.</p>
+                
                 <div class="contact-grid">
-                    <div>
-                        <div class="form-group"><label>Nama</label><input type="text" placeholder="Nama Anda"></div>
-                        <div class="form-group"><label>Pesan</label><textarea rows="4" placeholder="Tulis pesan..."></textarea></div>
-                        <button class="btn-submit">Kirim Pesan</button>
+                    <div style="background: rgba(255,255,255,0.4); padding: 2rem; border-radius: 16px;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Kirim Pesan Cepat</h3>
+                        <div class="form-group"><label>Nama Lengkap</label><input type="text" placeholder="Masukkan nama Anda"></div>
+                        <div class="form-group"><label>Alamat Email / No. HP</label><input type="text" placeholder="Kontak yang bisa dihubungi"></div>
+                        <div class="form-group"><label>Pesan atau Kendala</label><textarea rows="5" placeholder="Tulis rincian pesan Anda di sini..."></textarea></div>
+                        <button class="btn-submit" style="margin-top: 10px;">Kirim Pesan</button>
                     </div>
-                    <div>
-                        <h4>Info Kontak</h4>
-                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">location_on</span> Jl. Kependudukan No. 1, Tanimbar</p>
-                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">email</span> info@adminduk.go.id</p>
-                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">call</span> 0811-2233-4455</p>
+                    
+                    <div style="display: flex; flex-direction: column; justify-content: center; padding: 1rem;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary); font-size: 1.6rem;">Pusat Bantuan</h3>
+                        <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 1.5rem;">
+                            <span class="material-symbols-outlined" style="font-size: 2rem; color: var(--primary-light); background: rgba(59,130,246,0.1); padding: 10px; border-radius: 12px;">location_on</span>
+                            <div>
+                                <h4 style="margin-bottom: 3px; color: var(--text-main);">Alamat Kantor</h4>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">Jl. Kependudukan No. 1, Kompleks Perkantoran, Kab. Kepulauan Tanimbar</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 1.5rem;">
+                            <span class="material-symbols-outlined" style="font-size: 2rem; color: var(--accent); background: rgba(16,185,129,0.1); padding: 10px; border-radius: 12px;">email</span>
+                            <div>
+                                <h4 style="margin-bottom: 3px; color: var(--text-main);">Email Dukungan</h4>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">layanan@adminduk.go.id</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: flex-start; gap: 15px;">
+                            <span class="material-symbols-outlined" style="font-size: 2rem; color: #F59E0B; background: rgba(245,158,11,0.1); padding: 10px; border-radius: 12px;">support_agent</span>
+                            <div>
+                                <h4 style="margin-bottom: 3px; color: var(--text-main);">Layanan Call Center</h4>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">0811-2233-4455 <br>(Senin - Jumat, 08:00 - 16:00 WIT)</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -303,59 +528,101 @@
 
         <!-- ADMIN PANEL -->
         <section id="admin" class="page-section">
-            <div class="glass" style="padding: 2rem;">
-                <h1>Panel Administrasi</h1>
-                <div class="alert-box alert-info"><span class="material-symbols-outlined">admin_panel_settings</span><div>Halaman khusus verifikasi pengajuan dokumen.</div></div>
-                <button class="btn-submit" style="width: auto; margin-bottom: 15px;" onclick="loadDataAdmin()"><span class="material-symbols-outlined">refresh</span> Refresh Data</button>
+            <div class="glass" style="padding: 2.5rem;">
+                <h1 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;"><span class="material-symbols-outlined" style="font-size: 2.5rem;">admin_panel_settings</span> Panel Administrator</h1>
+                
+                <div class="alert-box alert-info">
+                    <span class="material-symbols-outlined" style="font-size: 2rem;">verified_user</span>
+                    <div>
+                        <strong style="display: block; font-size: 1.05rem; margin-bottom: 5px;">Ruang Kendali Verifikasi</strong>
+                        Halaman ini dikhususkan bagi Pejabat/Admin Disdukcapil untuk memverifikasi dokumen pengajuan secara komprehensif. Pastikan memeriksa keaslian dokumen PDF sebelum mengubah status.
+                    </div>
+                </div>
+                
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                    <button class="btn-submit" style="width: auto; padding: 10px 25px; border-radius: 30px;" onclick="loadDataAdmin()">
+                        <span class="material-symbols-outlined">sync</span> Segarkan Data
+                    </button>
+                </div>
+                
                 <div class="table-responsive">
                     <table>
-                        <thead><tr><th>ID Pengajuan</th><th>Tgl</th><th>Petugas</th><th>Jenis Dokumen</th><th>Nama Pemohon</th><th>Dokumen</th><th>Status</th><th>Aksi</th></tr></thead>
-                        <tbody id="tableBodyAdmin"><tr><td colspan="8" class="text-center">Klik Refresh Data untuk memuat...</td></tr></tbody>
+                        <thead>
+                            <tr>
+                                <th>ID Register</th>
+                                <th>Tanggal</th>
+                                <th>Petugas Faskes</th>
+                                <th>Jenis Layanan</th>
+                                <th>Nama Pemohon</th>
+                                <th>Lampiran</th>
+                                <th>Status Berjalan</th>
+                                <th>Tindakan</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyAdmin">
+                            <tr><td colspan="8" class="text-center" style="padding: 3rem 0; color: var(--text-muted);">Tabel kosong. Klik tombol 'Segarkan Data' untuk memuat pengajuan terbaru.</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>@2025 Dinas Kependudukan dan Pencatatan Sipil Kabupaten Kepulauan Tanimbar</footer>
+    <footer>
+        <p>&copy; 2025 Dinas Kependudukan dan Pencatatan Sipil Kabupaten Kepulauan Tanimbar.</p>
+        <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">Platform Lahir Mati Pro Aktif - Melayani dengan Hati</p>
+    </footer>
 
     <!-- Global Loader & Toast -->
-    <div id="loader"><div class="spinner"></div><p style="margin-top: 15px; font-weight: 500; color: var(--primary);">Memproses...</p></div>
+    <div id="loader"><div class="spinner"></div><p style="margin-top: 20px; font-weight: 600; color: var(--primary); letter-spacing: 1px;">MEMPROSES SISTEM...</p></div>
     <div id="toast"><span class="material-symbols-outlined" id="toastIcon">info</span><span id="toastMsg">Pesan di sini</span></div>
 
-    <!-- Modals -->
+    <!-- Modals (Login & Register) -->
     <div id="loginModal">
         <div class="login-box glass">
-            <h2>Masuk Akses Pro Aktif</h2>
-            <p class="text-muted" style="margin-bottom: 20px;">Masukkan username dan password Anda</p>
-            <input type="text" id="loginUsername" placeholder="Username" style="width:100%; margin-bottom: 15px;">
-            <input type="password" id="loginPassword" placeholder="Password" style="width:100%; margin-bottom: 15px;">
-            <button class="btn-submit" onclick="doLogin()">Masuk Akses</button>
-            <span class="link-text" onclick="showRegister()">Belum punya akun? Daftar Petugas di sini</span>
-            <button class="btn-submit" style="background: transparent; color: var(--text-muted); margin-top: 10px;" onclick="document.getElementById('loginModal').style.display='none'">Batal</button>
+            <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--primary); margin-bottom: 10px;">lock_person</span>
+            <h2 style="font-size: 1.8rem; margin-bottom: 5px;">Akses Keamanan</h2>
+            <p class="text-muted" style="margin-bottom: 25px; font-size: 0.9rem;">Masuk menggunakan kredensial petugas yang sah</p>
+            
+            <div class="form-group" style="text-align: left;"><input type="text" id="loginUsername" placeholder="Username terdaftar"></div>
+            <div class="form-group" style="text-align: left; margin-bottom: 25px;"><input type="password" id="loginPassword" placeholder="Kata Sandi (Password)"></div>
+            
+            <button class="btn-submit" onclick="doLogin()">Masuk Sistem</button>
+            <span class="link-text" onclick="showRegister()">Belum memiliki Akses? Daftar Petugas di sini</span>
+            
+            <button style="background: transparent; color: var(--text-muted); border: none; font-weight: 500; cursor: pointer; margin-top: 20px; padding: 10px; width: 100%; transition: 0.3s;" onclick="document.getElementById('loginModal').classList.remove('show'); setTimeout(()=>document.getElementById('loginModal').style.display='none', 300)">Batal & Kembali</button>
         </div>
     </div>
 
     <div id="registerModal">
-        <div class="login-box glass" style="max-width: 500px; text-align: left;">
-            <h2 class="text-center">Daftar Akun Petugas</h2>
-            <p class="text-center text-muted" style="margin-bottom: 20px;">Bergabunglah bersama Lahir Mati Pro Aktif</p>
-            <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regNama"></div>
-            <div class="form-group"><label>Username</label><input type="text" id="regUsername"></div>
-            <div class="form-group"><label>Password</label><input type="password" id="regPassword"></div>
-            <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
-            <div class="form-group"><label>No HP / WhatsApp</label><input type="text" id="regHp"></div>
-            <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="form-group"><label>Kecamatan Faskes</label><input type="text" id="regKec"></div>
-                <div class="form-group"><label>Desa/Kelurahan</label><input type="text" id="regDesa"></div>
+        <div class="login-box glass" style="max-width: 550px; text-align: left; padding: 2.5rem;">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--accent); margin-bottom: 5px;">person_add</span>
+                <h2 style="font-size: 1.8rem; margin-bottom: 5px;">Pendaftaran Petugas</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Bergabunglah menjadi fasilitator Lahir Mati Pro Aktif</p>
             </div>
-            <div class="form-group" style="margin-top: 10px;">
-                <label>Upload Foto Profil (JPG/PNG)</label>
-                <input type="file" id="regFoto" accept="image/*" onchange="handleFotoUpload(this)">
-                <small id="regFotoName" style="color: var(--primary); display:block; margin-top:5px;"></small>
+            
+            <div class="form-grid" style="gap: 15px;">
+                <div class="form-group full"><label>Nama Lengkap Identitas</label><input type="text" id="regNama" placeholder="Gelar & Nama"></div>
+                <div class="form-group"><label>Username Pribadi</label><input type="text" id="regUsername" placeholder="Tanpa spasi"></div>
+                <div class="form-group"><label>Kata Sandi</label><input type="password" id="regPassword" placeholder="Minimal 6 karakter"></div>
+                <div class="form-group"><label>Alamat Email</label><input type="email" id="regEmail" placeholder="nama@faskes.com"></div>
+                <div class="form-group"><label>No HP / WhatsApp Aktif</label><input type="text" id="regHp" placeholder="08xx..."></div>
+                <div class="form-group"><label>Kecamatan Tugas</label><input type="text" id="regKec" placeholder="Nama Kecamatan"></div>
+                <div class="form-group"><label>Desa/Kelurahan Tugas</label><input type="text" id="regDesa" placeholder="Nama Desa"></div>
+                
+                <div class="form-group full" style="margin-top: 10px;">
+                    <label style="color: var(--primary);">Foto Profil Resmi Petugas (JPG/PNG)</label>
+                    <div class="file-upload-wrapper" style="padding: 1.5rem;" onclick="document.getElementById('regFoto').click()">
+                        <span class="material-symbols-outlined" style="font-size: 2rem; margin-bottom: 5px;">add_a_photo</span>
+                        <p id="regFotoName" style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Pilih file pas foto terbaru</p>
+                    </div>
+                    <input type="file" id="regFoto" accept="image/*" onchange="handleFotoUpload(this)">
+                </div>
             </div>
-            <button class="btn-submit" style="margin-top: 15px;" id="btnSubmitReg" onclick="doRegister()">Daftarkan Akun</button>
-            <button class="btn-submit" style="background: transparent; color: var(--text-muted); margin-top: 5px; width: 100%;" onclick="document.getElementById('registerModal').style.display='none'">Batal</button>
+            
+            <button class="btn-submit" style="margin-top: 25px;" id="btnSubmitReg" onclick="doRegister()"><span class="material-symbols-outlined">how_to_reg</span> Daftarkan Akun Saya</button>
+            <button style="background: transparent; color: var(--text-muted); border: none; font-weight: 500; cursor: pointer; margin-top: 15px; padding: 10px; width: 100%; transition: 0.3s; text-align: center;" onclick="document.getElementById('registerModal').classList.remove('show'); setTimeout(()=>document.getElementById('registerModal').style.display='none', 300)">Batal</button>
         </div>
     </div>
 
@@ -363,8 +630,7 @@
         // ==========================================
         // KONFIGURASI PENTING (API URL)
         // ==========================================
-        // Ganti URL ini dengan URL Web App hasil Deploy Google Apps Script Anda!
-        const API_URL = "https://script.google.com/macros/s/AKfycbwwhG3KGIlmnMim4WHKRSLy5BDIUBsdEld-0ZHR7Hoy41ibjsWOvGisQ4mNcC6t2f5Ftw/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbxhALXbR3Bi2I1MVdacvXcUCrt1aB-vUEc5A1yJENBDdjrYa8yUi-Xs9rUuoJ_1PNthgg/exec";
 
         // --- FUNGSI KOMUNIKASI API FETCH ---
         async function apiCall(action, data = {}) {
@@ -375,13 +641,13 @@
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain digunakan agar tidak terhalang kebijakan CORS di browser
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
                     body: JSON.stringify({ action: action, data: data })
                 });
                 return await response.json();
             } catch (e) {
                 console.error("Fetch Error:", e);
-                throw new Error("Gagal terhubung ke Server Database Spreadsheet.");
+                throw new Error("Koneksi gagal. Periksa jaringan internet atau URL API Anda.");
             }
         }
 
@@ -397,7 +663,7 @@
         function navigate(sectionId) {
             if (sectionId === 'admin') {
                 if (!currentUser) { showToast('Silakan masuk terlebih dahulu!', 'error'); showLogin(); return; }
-                if (currentUser.role !== 'admin') { showToast('Akses Ditolak! Khusus Administrator.', 'error'); return; }
+                if (currentUser.role !== 'admin') { showToast('Akses Ditolak! Laman ini khusus untuk Pejabat/Admin.', 'error'); return; }
             }
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
@@ -407,37 +673,54 @@
 
             if(sectionId === 'dashboard') loadDashboard();
             if(sectionId === 'pengajuan') checkLoginForForm();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        function toggleMenu() { 
+            const nav = document.getElementById('navLinks');
+            const icon = document.querySelector('.menu-toggle .material-symbols-outlined');
+            nav.classList.toggle('active'); 
+            icon.innerText = nav.classList.contains('active') ? 'close' : 'menu_open';
+        }
+        
         function showLoader(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+        
         function showToast(msg, type='info') {
             const toast = document.getElementById('toast');
             toast.className = ''; toast.classList.add('show', type);
             document.getElementById('toastIcon').innerText = type === 'success' ? 'check_circle' : (type === 'error' ? 'error' : 'info');
             document.getElementById('toastMsg').innerText = msg;
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); }, 4000);
         }
 
-        // --- AUTH ---
+        // --- AUTH (UI Modal) ---
         function showLogin() {
             if(currentUser) {
                 currentUser = null; localStorage.removeItem('adminduk_user');
-                updateUIAuth(); showToast('Berhasil logout', 'success'); navigate('dashboard');
+                updateUIAuth(); showToast('Anda telah keluar dari sistem.', 'success'); navigate('dashboard');
             } else {
-                document.getElementById('loginModal').style.display = 'flex';
+                const modal = document.getElementById('loginModal');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+                document.getElementById('registerModal').classList.remove('show');
                 document.getElementById('registerModal').style.display = 'none';
             }
         }
 
         function showRegister() {
-            document.getElementById('loginModal').style.display = 'none';
-            document.getElementById('registerModal').style.display = 'flex';
+            document.getElementById('loginModal').classList.remove('show');
+            setTimeout(() => {
+                document.getElementById('loginModal').style.display = 'none';
+                const modalReg = document.getElementById('registerModal');
+                modalReg.style.display = 'flex';
+                setTimeout(() => modalReg.classList.add('show'), 10);
+            }, 300);
         }
 
         function handleFotoUpload(input) {
             const file = input.files[0]; if(!file) return;
             document.getElementById('regFotoName').innerText = file.name;
+            document.getElementById('regFotoName').style.color = "var(--primary)";
             fotoFileName = file.name;
             const reader = new FileReader();
             reader.onload = function(e) { fotoBase64Data = e.target.result.split(',')[1]; };
@@ -453,7 +736,7 @@
             };
 
             if(!formData.nama || !formData.username || !formData.pass || !fotoBase64Data) {
-                return showToast('Mohon lengkapi semua data dan upload foto!', 'error');
+                return showToast('Mohon lengkapi data esensial dan unggah foto profil!', 'error');
             }
 
             showLoader(true); document.getElementById('btnSubmitReg').disabled = true;
@@ -461,8 +744,9 @@
                 const res = await apiCall('register', formData);
                 showLoader(false); document.getElementById('btnSubmitReg').disabled = false;
                 if(res.status === 'success') {
-                    showToast('Registrasi berhasil! Silakan login.', 'success');
-                    document.getElementById('registerModal').style.display = 'none'; showLogin();
+                    showToast('Pendaftaran berhasil! Silakan masuk menggunakan kredensial Anda.', 'success');
+                    document.getElementById('registerModal').classList.remove('show');
+                    setTimeout(() => { document.getElementById('registerModal').style.display = 'none'; showLogin(); }, 300);
                 } else { showToast(res.message, 'error'); }
             } catch(err) {
                 showLoader(false); document.getElementById('btnSubmitReg').disabled = false;
@@ -473,75 +757,110 @@
         async function doLogin() {
             const username = document.getElementById('loginUsername').value;
             const pass = document.getElementById('loginPassword').value;
-            if(!username || !pass) return showToast('Username dan Password harus diisi!', 'error');
+            if(!username || !pass) return showToast('Pastikan Username dan Password telah diisi!', 'error');
 
-            showLoader(true); document.getElementById('loginModal').style.display = 'none';
+            showLoader(true); 
+            document.getElementById('loginModal').classList.remove('show');
+            setTimeout(() => document.getElementById('loginModal').style.display = 'none', 300);
+            
             try {
                 const res = await apiCall('login', { username: username, password: pass });
                 showLoader(false);
                 if(res.status === 'success') {
                     currentUser = res.user; localStorage.setItem('adminduk_user', JSON.stringify(currentUser));
-                    updateUIAuth(); showToast(`Selamat datang, ${currentUser.nama}`, 'success');
+                    updateUIAuth(); showToast(`Selamat bertugas, ${currentUser.nama}`, 'success');
                 } else {
-                    showToast(res.message, 'error'); document.getElementById('loginModal').style.display = 'flex';
+                    showToast(res.message, 'error'); showLogin();
                 }
             } catch(err) {
-                showLoader(false); showToast(err.message, 'error'); document.getElementById('loginModal').style.display = 'flex';
+                showLoader(false); showToast(err.message, 'error'); showLogin();
             }
         }
 
         function updateUIAuth() {
             const btnAuth = document.getElementById('btnAuth'), navAdmin = document.getElementById('navAdmin');
             if(currentUser) {
-                btnAuth.innerText = 'Logout'; btnAuth.style.background = '#ef4444';
+                btnAuth.innerHTML = '<span class="material-symbols-outlined" style="font-size: 1.2rem;">logout</span> Keluar'; 
+                btnAuth.style.background = 'linear-gradient(135deg, #EF4444, #DC2626)';
                 navAdmin.style.display = currentUser.role === 'admin' ? 'block' : 'none';
                 document.getElementById('p_nama').value = currentUser.nama; document.getElementById('p_email').value = currentUser.email;
                 document.getElementById('p_hp').value = currentUser.no_hp; document.getElementById('p_kec').value = currentUser.kecamatan;
             } else {
-                btnAuth.innerText = 'Login'; btnAuth.style.background = 'var(--primary)'; navAdmin.style.display = 'none';
+                btnAuth.innerHTML = 'Masuk Akses'; btnAuth.style.background = 'linear-gradient(135deg, var(--primary), var(--primary-light))'; 
+                navAdmin.style.display = 'none';
                 document.getElementById('p_nama').value = ''; document.getElementById('p_email').value = '';
                 document.getElementById('p_hp').value = ''; document.getElementById('p_kec').value = '';
             }
         }
 
-        function checkLoginForForm() { if(!currentUser) { showToast('Anda harus login sebagai petugas!', 'error'); navigate('dashboard'); showLogin(); } }
+        function checkLoginForForm() { if(!currentUser) { showToast('Harap login sebagai Petugas Kesehatan terlebih dahulu.', 'error'); navigate('dashboard'); showLogin(); } }
 
-        // --- DASHBOARD ---
+        // --- DASHBOARD CHARTS ---
         async function loadDashboard() {
             try {
                 const stats = await apiCall('getStats');
                 if(stats.status === 'error') return;
-                document.getElementById('statTotal').innerText = stats.total;
-                document.getElementById('statKelahiran').innerText = stats.kelahiran;
-                document.getElementById('statKematian').innerText = stats.kematian;
+                
+                // Animate Numbers
+                animateValue("statTotal", 0, stats.total, 1000);
+                animateValue("statKelahiran", 0, stats.kelahiran, 1000);
+                animateValue("statKematian", 0, stats.kematian, 1000);
+                
                 renderCharts(stats);
             } catch(e) { console.log(e); }
         }
 
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            if(!obj) return;
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) window.requestAnimationFrame(step);
+            };
+            window.requestAnimationFrame(step);
+        }
+
         function renderCharts(data) {
+            const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { family: 'Poppins' } } } } };
+            
             const ctxJenis = document.getElementById('chartJenis').getContext('2d');
             if(chartJenisInstance) chartJenisInstance.destroy();
-            chartJenisInstance = new Chart(ctxJenis, { type: 'doughnut', data: { labels: ['Akta Kelahiran', 'Akta Kematian', 'Lahir Mati'], datasets: [{ data: [data.kelahiran, data.kematian, data.lahir_mati], backgroundColor: ['#3B82F6', '#EF4444', '#10B981'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+            chartJenisInstance = new Chart(ctxJenis, { 
+                type: 'doughnut', 
+                data: { labels: ['Akta Kelahiran', 'Akta Kematian', 'Lahir Mati'], datasets: [{ data: [data.kelahiran, data.kematian, data.lahir_mati], backgroundColor: ['#3B82F6', '#EF4444', '#10B981'], borderWidth: 0, hoverOffset: 4 }] }, 
+                options: chartOptions 
+            });
 
             const ctxStatus = document.getElementById('chartStatus').getContext('2d');
             if(chartStatusInstance) chartStatusInstance.destroy();
-            chartStatusInstance = new Chart(ctxStatus, { type: 'bar', data: { labels: ['Menunggu', 'Diproses', 'Selesai'], datasets: [{ label: 'Jumlah Pengajuan', data: [data.menunggu, data.diproses, data.selesai], backgroundColor: ['#F59E0B', '#3B82F6', '#10B981'], borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } } });
+            chartStatusInstance = new Chart(ctxStatus, { 
+                type: 'bar', 
+                data: { labels: ['Menunggu Verifikasi', 'Sedang Diproses', 'Telah Selesai'], datasets: [{ label: 'Total Pengajuan', data: [data.menunggu, data.diproses, data.selesai], backgroundColor: ['#F59E0B', '#3B82F6', '#10B981'], borderRadius: 6 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0, font: {family: 'Poppins'} }, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false }, ticks: { font: {family: 'Poppins'} } } }, plugins: { legend: { display: false } } } 
+            });
         }
 
-        // --- FORMS ---
+        // --- FORMS LOGIC ---
         function handleFile(input) {
             const file = input.files[0], label = document.getElementById('file-label');
             if(!file) return;
-            if(file.type !== "application/pdf") { showToast("File harus format PDF!", "error"); input.value = ""; label.innerText = "Klik untuk memilih file PDF (Max 2MB)"; return; }
-            if(file.size > 2 * 1024 * 1024) { showToast("Ukuran maksimal 2MB!", "error"); input.value = ""; label.innerText = "Klik untuk memilih file PDF (Max 2MB)"; return; }
-            label.innerText = file.name;
+            if(file.type !== "application/pdf") { showToast("Sistem hanya menerima file PDF murni!", "error"); input.value = ""; label.innerText = "Klik area ini untuk memilih file (Maks 2MB)"; label.style.color="var(--text-muted)"; return; }
+            if(file.size > 2 * 1024 * 1024) { showToast("Kapasitas file PDF maksimal 2MB!", "error"); input.value = ""; label.innerText = "Klik area ini untuk memilih file (Maks 2MB)"; label.style.color="var(--text-muted)"; return; }
+            
+            label.innerText = "File terpilih: " + file.name;
+            label.style.color = "var(--primary-light)";
+            label.style.fontWeight = "600";
+            
             const reader = new FileReader(); reader.onload = function(e) { fileBase64Data = e.target.result.split(',')[1]; }; reader.readAsDataURL(file);
         }
 
         async function submitForm(e) {
             e.preventDefault();
-            if(!currentUser) return showToast("Sesi habis, silakan login ulang.", "error");
-            if(!fileBase64Data) return showToast("File PDF belum siap / diproses.", "error");
+            if(!currentUser) return showToast("Sesi kadaluarsa, silakan login ulang.", "error");
+            if(!fileBase64Data) return showToast("Berkas PDF belum berhasil diproses, silakan pilih ulang file Anda.", "error");
 
             const formData = {
                 nama_petugas: currentUser.nama, no_hp: currentUser.no_hp, email: currentUser.email, kecamatan: currentUser.kecamatan, desa: currentUser.desa,
@@ -558,34 +877,52 @@
                 const res = await apiCall('simpanPengajuan', formData);
                 showLoader(false); document.getElementById('btnSubmitForm').disabled = false;
                 if(res.status === 'success') {
-                    showToast("Pengajuan berhasil! ID: " + res.id, "success");
-                    document.getElementById('formAdminduk').reset(); document.getElementById('file-label').innerText = "Klik untuk memilih file PDF (Max 2MB)"; fileBase64Data = null;
-                    updateUIAuth();
-                    setTimeout(() => { navigate('cek-status'); document.getElementById('searchQuery').value = res.id; cariStatus(); }, 2000);
+                    showToast("Luar Biasa! Pengajuan terkirim dengan ID: " + res.id, "success");
+                    document.getElementById('formAdminduk').reset(); 
+                    document.getElementById('file-label').innerText = "Klik area ini untuk memilih file (Maks 2MB)"; 
+                    document.getElementById('file-label').style.color="var(--text-muted)"; document.getElementById('file-label').style.fontWeight="normal";
+                    fileBase64Data = null; updateUIAuth();
+                    
+                    setTimeout(() => { navigate('cek-status'); document.getElementById('searchQuery').value = res.id; cariStatus(); }, 2500);
                 } else { showToast(res.message, "error"); }
             } catch(err) {
                 showLoader(false); document.getElementById('btnSubmitForm').disabled = false; showToast(err.message, "error");
             }
         }
 
-        // --- STATUS & ADMIN ---
+        // --- CEK STATUS & ADMIN ---
         async function cariStatus() {
             const q = document.getElementById('searchQuery').value;
-            if(!q) return showToast("Masukkan ID atau Nama", "error");
-            document.getElementById('hasilPencarian').innerHTML = `<p class="text-center">Mencari...</p>`;
+            if(!q) return showToast("Mohon isi kotak pencarian terlebih dahulu.", "error");
+            document.getElementById('hasilPencarian').innerHTML = `<div style="text-align: center; padding: 2rem 0; color: var(--primary);"><div class="spinner" style="margin: 0 auto 15px; border-width: 3px; width: 35px; height: 35px;"></div>Mencari data ke peladen...</div>`;
             
             try {
                 const res = await apiCall('cekStatus', { query: q });
                 let html = '';
-                if(res.data.length === 0) { html = `<div class="alert-box alert-warning">Tidak ditemukan pengajuan dengan kata kunci tersebut.</div>`; } 
-                else {
+                if(res.data.length === 0) { 
+                    html = `<div class="alert-box alert-warning"><span class="material-symbols-outlined">search_off</span><div>Tidak ditemukan pengajuan dengan kata kunci tersebut. Periksa kembali NIK atau Nomor REQ Anda.</div></div>`; 
+                } else {
                     res.data.forEach(item => {
                         let badgeClass = item.status.toLowerCase();
-                        html += `<div class="card glass result-card"><div><h4 style="margin:0; color:var(--primary);">${item.id}</h4><p style="margin:5px 0; font-weight:bold;">${item.nama} - ${item.jenis}</p><p style="font-size:0.85rem;" class="text-muted">Tanggal: ${item.tanggal}</p></div><div><span class="badge ${badgeClass}">${item.status}</span></div></div>`;
+                        let iconMap = { 'Akta Kelahiran': 'child_care', 'Akta Kematian': 'church', 'Lahir Mati': 'heart_broken' };
+                        let iconT = iconMap[item.jenis] || 'description';
+                        
+                        html += `
+                        <div class="card glass result-card glass-card">
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <span class="material-symbols-outlined" style="font-size: 2.5rem; color: var(--primary-light); background: rgba(59,130,246,0.1); padding: 10px; border-radius: 12px;">${iconT}</span>
+                                <div>
+                                    <h4 style="margin:0; color:var(--primary); font-size: 1.1rem;">${item.id}</h4>
+                                    <p style="margin:2px 0; font-weight:600; font-size: 1.05rem;">${item.nama}</p>
+                                    <p style="font-size:0.85rem; color: var(--text-muted);">${item.jenis} &bull; Didaftarkan: ${item.tanggal}</p>
+                                </div>
+                            </div>
+                            <div style="text-align: right;"><span class="badge ${badgeClass}" style="font-size: 0.9rem; padding: 8px 16px;">Status: ${item.status}</span></div>
+                        </div>`;
                     });
                 }
                 document.getElementById('hasilPencarian').innerHTML = html;
-            } catch(e) { showToast(e.message, "error"); document.getElementById('hasilPencarian').innerHTML = ''; }
+            } catch(e) { showToast(e.message, "error"); document.getElementById('hasilPencarian').innerHTML = `<div class="alert-box alert-warning">Pencarian terganggu karena masalah jaringan.</div>`; }
         }
 
         async function loadDataAdmin() {
@@ -595,24 +932,46 @@
                 const res = await apiCall('getAllAdmin');
                 showLoader(false);
                 let tbody = document.getElementById('tableBodyAdmin');
-                if(res.data.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data pengajuan.</td></tr>`; return; }
+                if(res.data.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="padding: 3rem 0; color: var(--text-muted);">Belum ada rekam pengajuan tercatat.</td></tr>`; return; }
+                
                 let rows = '';
                 res.data.forEach(item => {
                     let badgeClass = item.status.toLowerCase();
-                    rows += `<tr><td><strong>${item.id}</strong></td><td>${item.tanggal}</td><td>${item.petugas}</td><td>${item.jenis}</td><td>${item.nama}</td><td><a href="${item.fileUrl}" target="_blank" style="color:var(--primary); text-decoration:none;"><span class="material-symbols-outlined">description</span> Lihat PDF</a></td><td><span class="badge ${badgeClass}" id="statusLabel_${item.rowIdx}">${item.status}</span></td><td><select onchange="gantiStatus(${item.rowIdx}, this.value)" style="padding: 5px; font-size: 0.8rem;"><option value="" disabled selected>Ubah Status</option><option value="Menunggu">Menunggu</option><option value="Diproses">Diproses</option><option value="Selesai">Selesai</option></select></td></tr>`;
+                    rows += `
+                    <tr>
+                        <td style="color: var(--primary); font-weight: 600;">${item.id}</td>
+                        <td style="white-space: nowrap;">${item.tanggal}</td>
+                        <td>${item.petugas}</td>
+                        <td style="font-weight: 500;">${item.jenis}</td>
+                        <td><strong>${item.nama}</strong></td>
+                        <td style="text-align: center;"><a href="${item.fileUrl}" target="_blank" style="color:var(--primary-light); text-decoration:none; display: inline-flex; flex-direction: column; align-items: center; font-size: 0.8rem; font-weight: 500; transition: 0.2s;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--primary-light)'"><span class="material-symbols-outlined" style="font-size: 1.5rem; margin-bottom: 3px;">find_in_page</span> Lihat PDF</a></td>
+                        <td><span class="badge ${badgeClass}" id="statusLabel_${item.rowIdx}">${item.status}</span></td>
+                        <td>
+                            <select onchange="gantiStatus(${item.rowIdx}, this.value)" style="padding: 8px; font-size: 0.85rem; border-radius: 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.8); cursor: pointer; color: var(--text-main); font-weight: 500;">
+                                <option value="" disabled selected>Tentukan Status</option>
+                                <option value="Menunggu">Menunggu</option>
+                                <option value="Diproses">Diproses</option>
+                                <option value="Selesai">Selesai</option>
+                            </select>
+                        </td>
+                    </tr>`;
                 });
                 tbody.innerHTML = rows;
             } catch(e) { showLoader(false); showToast(e.message, 'error'); }
         }
 
         async function gantiStatus(rowIdx, newStatus) {
-            if(!confirm(`Ubah status menjadi ${newStatus}?`)) return;
+            if(!confirm(`Konfirmasi Tindakan: Anda yakin ingin mengubah status register ini menjadi '${newStatus}'?`)) return;
             showLoader(true);
             try {
                 const res = await apiCall('updateStatus', { rowIdx: rowIdx, status: newStatus });
                 showLoader(false); showToast(res.message, 'success');
-                document.getElementById(`statusLabel_${rowIdx}`).innerText = newStatus;
-                document.getElementById(`statusLabel_${rowIdx}`).className = `badge ${newStatus.toLowerCase()}`;
+                const badge = document.getElementById(`statusLabel_${rowIdx}`);
+                badge.innerText = newStatus;
+                badge.className = `badge ${newStatus.toLowerCase()}`;
+                
+                // Trigger refresh stats if needed on background
+                loadDashboard();
             } catch(e) { showLoader(false); showToast(e.message, 'error'); }
         }
 
