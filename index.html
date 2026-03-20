@@ -202,10 +202,10 @@
         }
         
         @media(max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            h2 { font-size: 1.3rem; }
-            .section-desc { font-size: 0.9rem; margin-bottom: 1.5rem;}
-            .form-container { padding: 1.8rem 1.2rem; }
+            h1 { font-size: 1.6rem; } /* Ukuran font judul diperkecil sedikit agar tidak terlalu memakan tempat di HP */
+            h2 { font-size: 1.2rem; }
+            .section-desc { font-size: 0.9rem; margin-bottom: 1.2rem;}
+            .form-container { padding: 1.5rem 1.2rem; }
             
             .search-bar-wrapper { flex-direction: column; background: transparent; padding: 0; border: none;}
             .search-bar-wrapper input { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
@@ -215,11 +215,11 @@
             .result-card > div:last-child { align-self: flex-start; }
             
             .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
-            .chart-wrapper { height: 250px; }
+            .chart-wrapper { height: 230px; } /* Tinggi grafik sedikit dikurangi agar proporsional di HP */
             
-            .card { padding: 1.5rem; flex-direction: row; align-items: center; justify-content: space-between;}
+            .card { padding: 1.2rem; flex-direction: row; align-items: center; justify-content: space-between;}
             .card-header { width: 100%; }
-            .card h3 { font-size: 1.8rem; }
+            .card h3 { font-size: 1.6rem; }
             .card-icon { width: 45px; height: 45px; font-size: 1.5rem; }
             
             .timeline { padding-left: 25px; }
@@ -294,12 +294,13 @@
                 </div>
             </div>
             
+            <!-- Perbaikan utama: Menghilangkan style grid-column yang memaksakan 2 kolom di HP -->
             <div class="form-grid">
-                <div class="card glass glass-card" style="grid-column: 1;">
+                <div class="card glass glass-card">
                     <h2>Grafik Per Jenis Dokumen</h2>
                     <div class="chart-wrapper"><canvas id="chartJenis"></canvas></div>
                 </div>
-                <div class="card glass glass-card" style="grid-column: 2;">
+                <div class="card glass glass-card">
                     <h2>Status Progres Pengajuan</h2>
                     <div class="chart-wrapper"><canvas id="chartStatus"></canvas></div>
                 </div>
