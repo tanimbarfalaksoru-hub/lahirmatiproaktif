@@ -528,10 +528,12 @@
                 <div class="contact-grid">
                     <div style="background: rgba(255,255,255,0.4); padding: 2rem; border-radius: 16px;">
                         <h3 style="margin-bottom: 1.5rem; color: var(--primary);">Kirim Pesan Cepat</h3>
-                        <div class="form-group"><label>Nama Lengkap</label><input type="text" placeholder="Masukkan nama Anda"></div>
-                        <div class="form-group"><label>Alamat Email / No. HP</label><input type="text" placeholder="Kontak yang bisa dihubungi"></div>
-                        <div class="form-group"><label>Pesan atau Kendala</label><textarea rows="5" placeholder="Tulis rincian pesan Anda di sini..."></textarea></div>
-                        <button class="btn-submit" style="margin-top: 10px;">Kirim Pesan</button>
+                        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="kontakNama" placeholder="Masukkan nama Anda"></div>
+                        <div class="form-group"><label>Alamat Email / No. HP</label><input type="text" id="kontakKontak" placeholder="Kontak yang bisa dihubungi"></div>
+                        <div class="form-group"><label>Pesan atau Kendala</label><textarea id="kontakPesan" rows="5" placeholder="Tulis rincian pesan Anda di sini..."></textarea></div>
+                        <button class="btn-submit" style="margin-top: 10px; background: linear-gradient(135deg, #10B981, #059669);" onclick="kirimPesanWA()">
+                            Kirim via WhatsApp <span class="material-symbols-outlined" style="font-size: 1.2rem;">send</span>
+                        </button>
                     </div>
                     
                     <div style="display: flex; flex-direction: column; justify-content: center; padding: 1rem;">
@@ -540,21 +542,21 @@
                             <span class="material-symbols-outlined" style="font-size: 2rem; color: var(--primary-light); background: rgba(59,130,246,0.1); padding: 10px; border-radius: 12px;">location_on</span>
                             <div>
                                 <h4 style="margin-bottom: 3px; color: var(--text-main);">Alamat Kantor</h4>
-                                <p style="color: var(--text-muted); font-size: 0.95rem;">Jl. Kependudukan No. 1, Kompleks Perkantoran, Kab. Kepulauan Tanimbar</p>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">Jl. Ir. Soekarno Saumlaki</p>
                             </div>
                         </div>
                         <div style="display: flex; align-items: flex-start; gap: 15px; margin-bottom: 1.5rem;">
                             <span class="material-symbols-outlined" style="font-size: 2rem; color: var(--accent); background: rgba(16,185,129,0.1); padding: 10px; border-radius: 12px;">email</span>
                             <div>
                                 <h4 style="margin-bottom: 3px; color: var(--text-main);">Email Dukungan</h4>
-                                <p style="color: var(--text-muted); font-size: 0.95rem;">layanan@adminduk.go.id</p>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">lahirmatiproaktif@gmail.com</p>
                             </div>
                         </div>
                         <div style="display: flex; align-items: flex-start; gap: 15px;">
                             <span class="material-symbols-outlined" style="font-size: 2rem; color: #F59E0B; background: rgba(245,158,11,0.1); padding: 10px; border-radius: 12px;">support_agent</span>
                             <div>
                                 <h4 style="margin-bottom: 3px; color: var(--text-main);">Layanan Call Center</h4>
-                                <p style="color: var(--text-muted); font-size: 0.95rem;">0811-2233-4455 <br>(Senin - Jumat, 08:00 - 16:00 WIT)</p>
+                                <p style="color: var(--text-muted); font-size: 0.95rem;">+62 81343201115 <br>(Senin - Jumat, 08:00 - 16:00 WIT)</p>
                             </div>
                         </div>
                     </div>
@@ -666,7 +668,7 @@
         // ==========================================
         // KONFIGURASI PENTING (API URL)
         // ==========================================
-        const API_URL = "https://script.google.com/macros/s/AKfycbzBM_adqbbLybamE_XN1gU_3YrbzPtZJ8-xoNZsO7qTghlRhgaXlfrmB8W-dbbgJRE69g/exec";
+        const API_URL = "https://script.google.com/macros/s/AKfycbzkQb1WXgTnyjN5FQ_amV6kaaP_y86_O9hT0LPOQk2cCusEOBvEnDyfeUWZxNHd3I4lKA/exec";
 
         // --- FUNGSI KOMUNIKASI API FETCH ---
         async function apiCall(action, data = {}) {
@@ -1009,6 +1011,32 @@
                 // Trigger refresh stats if needed on background
                 loadDashboard();
             } catch(e) { showLoader(false); showToast(e.message, 'error'); }
+        }
+
+        // --- KONTAK WHATSAPP ---
+        function kirimPesanWA() {
+            const nama = document.getElementById('kontakNama').value.trim();
+            const kontak = document.getElementById('kontakKontak').value.trim();
+            const pesan = document.getElementById('kontakPesan').value.trim();
+
+            if (!nama || !kontak || !pesan) {
+                showToast("Mohon lengkapi Nama, Kontak, dan Pesan Anda terlebih dahulu.", "error");
+                return;
+            }
+
+            const noTujuan = "6281343201115";
+            const textWA = `*Halo Admin Lahir Mati Pro Aktif!* 🌟\n\nSaya ingin bertanya/melaporkan kendala dengan rincian sebagai berikut:\n\n👤 *Nama:* ${nama}\n📞 *Kontak:* ${kontak}\n\n💬 *Pesan:*\n_"${pesan}"_\n\nMohon bantuan dan arahannya. Terima kasih! 🙏`;
+            
+            const encodedText = encodeURIComponent(textWA);
+            const waUrl = `https://wa.me/${noTujuan}?text=${encodedText}`;
+            
+            window.open(waUrl, '_blank');
+            
+            // Kosongkan form setelah diklik
+            document.getElementById('kontakNama').value = '';
+            document.getElementById('kontakKontak').value = '';
+            document.getElementById('kontakPesan').value = '';
+            showToast("Mengalihkan ke WhatsApp...", "success");
         }
 
         // --- INIT ---
