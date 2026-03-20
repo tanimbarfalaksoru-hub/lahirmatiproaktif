@@ -195,6 +195,8 @@
         .checkbox-wrapper { display: flex; flex-direction: row; align-items: flex-start; gap: 12px; margin-top: 15px; background: rgba(255,255,255,0.5); padding: 15px; border-radius: 12px;}
         .checkbox-wrapper input[type="checkbox"] { flex-shrink: 0; margin-top: 3px; width: 22px; height: 22px; accent-color: var(--primary);}
 
+        .text-justify-desktop { text-align: justify; }
+
         /* Responsive Breakpoints */
         @media(max-width: 900px) {
             .form-grid, .contact-grid { grid-template-columns: 1fr; gap: 1rem;}
@@ -202,30 +204,51 @@
         }
         
         @media(max-width: 600px) {
-            h1 { font-size: 1.6rem; } /* Ukuran font judul diperkecil sedikit agar tidak terlalu memakan tempat di HP */
+            /* General Mobile Fixes */
+            main { padding: 1.5rem 5%; }
+            h1 { font-size: 1.5rem; }
             h2 { font-size: 1.2rem; }
+            h3 { font-size: 1.1rem; }
             .section-desc { font-size: 0.9rem; margin-bottom: 1.2rem;}
-            .form-container { padding: 1.5rem 1.2rem; }
+            .form-container { padding: 1.2rem 1rem; }
+            .text-justify-desktop { text-align: left; } /* Mencegah jarak kosong aneh pada teks panjang di HP */
             
-            .search-bar-wrapper { flex-direction: column; background: transparent; padding: 0; border: none;}
-            .search-bar-wrapper input { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
-            .search-bar-wrapper button { width: 100% !important; padding: 14px;}
-            
-            .result-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .result-card > div:last-child { align-self: flex-start; }
-            
-            .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
-            .chart-wrapper { height: 230px; } /* Tinggi grafik sedikit dikurangi agar proporsional di HP */
-            
+            /* Dashboard Mobile Fixes */
+            .grid-3 { grid-template-columns: 1fr; gap: 0.8rem; margin-bottom: 1.5rem; }
             .card { padding: 1.2rem; flex-direction: row; align-items: center; justify-content: space-between;}
             .card-header { width: 100%; }
-            .card h3 { font-size: 1.6rem; }
+            .card h3 { font-size: 1.5rem; margin-top: 0;}
             .card-icon { width: 45px; height: 45px; font-size: 1.5rem; }
+            .chart-wrapper { height: 220px; } 
+
+            /* Tentang Kami Mobile Fixes */
+            #tentang .grid-3 { gap: 1rem; margin-top: 1rem; }
+            #tentang .card { padding: 1.2rem; flex-direction: column; align-items: flex-start; text-align: left; }
+            #tentang .card .material-symbols-outlined { font-size: 2.2rem !important; margin-bottom: 5px !important;}
+            #tentang .card h3 { margin-bottom: 5px !important; }
+
+            /* Search & Form Elements */
+            .search-bar-wrapper { flex-direction: column; background: transparent; padding: 0; border: none; margin-bottom: 1.5rem;}
+            .search-bar-wrapper input { background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+            .search-bar-wrapper button { width: 100% !important; padding: 14px;}
+            .result-card { flex-direction: column; align-items: flex-start; gap: 12px; padding: 1rem;}
+            .result-card > div:last-child { align-self: flex-start; }
             
-            .timeline { padding-left: 25px; }
+            /* Timeline Mobile */
+            .timeline { padding-left: 20px; gap: 15px;}
             .timeline::before { left: 9px; }
-            .tl-item::before { left: -22px; width: 14px; height: 14px; top: 22px;}
-            .tl-item { padding: 1.2rem; }
+            .tl-item::before { left: -20px; width: 12px; height: 12px; top: 22px;}
+            .tl-item { padding: 1rem; }
+
+            /* Modal Login & Register Fixes */
+            .login-box { padding: 1.8rem 1.2rem; width: 95%; max-width: none; border-radius: 16px; }
+            .login-box h2 { font-size: 1.4rem !important; }
+            .login-box p.text-muted { font-size: 0.85rem !important; margin-bottom: 15px !important;}
+            .login-box .material-symbols-outlined { font-size: 2.5rem !important; margin-bottom: 5px !important;}
+            .login-box .form-group { margin-bottom: 15px !important; }
+            .login-box .form-grid { gap: 10px !important; }
+            .login-box input { padding: 12px 15px; font-size: 0.95rem;}
+            .link-text { font-size: 0.85rem;}
         }
 
         /* Overlays & Modals */
@@ -294,7 +317,6 @@
                 </div>
             </div>
             
-            <!-- Perbaikan utama: Menghilangkan style grid-column yang memaksakan 2 kolom di HP -->
             <div class="form-grid">
                 <div class="card glass glass-card">
                     <h2>Grafik Per Jenis Dokumen</h2>
@@ -459,8 +481,8 @@
                 <h1 class="text-center">Mengenal Lahir Mati Pro Aktif</h1>
                 <p class="text-center section-desc">Inovasi pelayanan publik cerdas yang menjembatani kebutuhan administrasi kependudukan masyarakat dengan fasilitator kesehatan secara langsung.</p>
                 
-                <div style="margin-top: 2rem;">
-                    <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; text-align: justify;">
+                <div style="margin-top: 1.5rem;">
+                    <p class="text-justify-desktop" style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 1.5rem; color: var(--text-main);">
                         Lebih dari sekadar aplikasi digital, <strong>Lahir Mati Pro Aktif</strong> adalah wujud nyata kepedulian pemerintah daerah dalam menghadirkan layanan yang menyentuh langsung denyut nadi masyarakat di fasilitas kesehatan. Kami percaya bahwa setiap siklus kehidupan—baik kelahiran maupun kedukaan—sangatlah berharga dan berhak dicatat secara terhormat tanpa membebani keluarga dengan birokrasi yang panjang.
                     </p>
                     
