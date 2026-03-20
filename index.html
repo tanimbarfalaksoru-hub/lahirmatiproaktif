@@ -1,1928 +1,627 @@
-<!doctype html>
-<html lang="id" class="h-full">
- <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Layanan Proaktif Lahir Mati – Dukcapil KKT</title>
-  <script src="/_sdk/element_sdk.js"></script>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=Playfair+Display:wght@600;700&amp;display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --navy: #0f2d5e;
-      --navy-mid: #1a4080;
-      --navy-light: #2255a4;
-      --gold: #c9a227;
-      --gold-light: #e8c04a;
-      --white: #ffffff;
-      --gray-bg: #f4f7fc;
-      --text-dark: #0f2d5e;
-      --text-muted: #5a6e8c;
-    }
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lahir Mati Pro Aktif</title>
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    * { box-sizing: border-box; }
+    <style>
+        :root {
+            --primary: #1E3A8A;
+            --primary-light: #3B82F6;
+            --accent: #10B981;
+            --bg: #F3F4F6;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --surface: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.4);
+            --radius: 16px;
+        }
 
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      color: var(--text-dark);
-      background: var(--gray-bg);
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body { 
+            background: var(--bg); color: var(--text-main); line-height: 1.6; 
+            overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; 
+        }
 
-    .app-wrapper {
-      width: 100%;
-      min-height: 100%;
-      overflow-x: hidden;
-    }
+        /* Glassmorphism */
+        .glass {
+            background: var(--surface);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border); border-radius: var(--radius);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        }
 
-    /* ─── NAV ─── */
-    .navbar {
-      background: var(--navy);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.25);
-    }
+        /* Navbar */
+        nav {
+            position: sticky; top: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 5%; background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .nav-links { display: flex; gap: 20px; list-style: none; padding: 0; margin: 0; }
+        .nav-links li a { text-decoration: none; color: var(--text-muted); font-weight: 500; transition: 0.3s; cursor: pointer; }
+        .nav-links li a:hover, .nav-links li a.active { color: var(--primary); }
+        .btn-auth { background: var(--primary); color: white; padding: 8px 20px; border-radius: 20px; border: none; cursor: pointer; font-weight: 500; transition: 0.3s; }
+        .btn-auth:hover { background: var(--primary-light); }
+        .menu-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
 
-    .nav-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 68px;
-    }
+        @media(max-width: 850px) {
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; width: 100%; background: white; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
+            .nav-links.active { display: flex; }
+            .menu-toggle { display: block; }
+        }
 
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      cursor: pointer;
-    }
+        /* Layout */
+        main { padding: 2rem 5%; flex: 1; }
+        .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .logo-badge {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      box-shadow: 0 2px 8px rgba(201,162,39,0.4);
-      flex-shrink: 0;
-    }
+        h1, h2 { color: var(--primary); margin-bottom: 1rem; line-height: 1.2; }
+        .text-center { text-align: center; }
+        .text-muted { color: var(--text-muted); }
+        
+        /* Grid & Cards */
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { padding: 1.5rem; display: flex; flex-direction: column; gap: 10px; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; }
+        .card-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; justify-content: center; align-items: center; background: rgba(30, 58, 138, 0.1); color: var(--primary); font-size: 1.8rem; }
+        .card h3 { font-size: 2rem; margin: 0; color: var(--text-main); }
+        .card p { font-size: 0.9rem; margin: 0; }
 
-    .logo-text { line-height: 1.1; }
-    .logo-text .app-name-display {
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--gold-light);
-      letter-spacing: 0.02em;
-    }
-    .logo-text .logo-sub {
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.65);
-      font-weight: 400;
-    }
+        /* Forms */
+        .form-container { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 1rem; }
+        .form-group.full { grid-column: 1 / -1; }
+        label { font-size: 0.9rem; font-weight: 500; }
+        input, select, textarea { padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background: rgba(255,255,255,0.8); outline: none; transition: 0.3s; width: 100%; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
+        input[readonly] { background: #e5e7eb; cursor: not-allowed; }
+        
+        .btn-submit { background: var(--primary); color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-submit:hover { background: var(--primary-light); }
+        .btn-submit:disabled { background: var(--text-muted); cursor: not-allowed; }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
+        .file-upload-wrapper { border: 2px dashed #ccc; border-radius: 12px; padding: 2rem; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.5); }
+        .file-upload-wrapper:hover { border-color: var(--primary); background: rgba(30, 58, 138, 0.05); }
+        .file-upload-wrapper input[type="file"] { display: none; }
+        .file-info { font-size: 0.85rem; color: #ef4444; margin-top: 10px; display: block; }
 
-    .nav-link {
-      color: rgba(255,255,255,0.82);
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-      border: none;
-      background: none;
-    }
-    .nav-link:hover, .nav-link.active {
-      color: var(--gold-light);
-      background: rgba(255,255,255,0.08);
-    }
+        /* Timeline */
+        .timeline { display: flex; flex-direction: column; gap: 20px; position: relative; padding-left: 30px; }
+        .timeline::before { content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 2px; background: var(--primary-light); }
+        .tl-item { position: relative; }
+        .tl-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); border: 3px solid white; box-shadow: 0 0 0 2px var(--primary-light); }
+        .tl-item h4 { margin-bottom: 5px; }
 
-    .hamburger-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-      padding: 0.5rem;
-      border-radius: 6px;
-    }
-    .hamburger-btn:hover { background: rgba(255,255,255,0.1); }
+        /* Tables & UI */
+        .table-responsive { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: rgba(30, 58, 138, 0.05); color: var(--primary); font-weight: 600; }
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge.menunggu { background: #fef3c7; color: #d97706; }
+        .badge.diproses { background: #dbeafe; color: #1e40af; }
+        .badge.selesai { background: #d1fae5; color: #065f46; }
 
-    .mobile-menu {
-      display: none;
-      background: var(--navy-mid);
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    .mobile-menu.open { display: block; }
-    .mobile-menu .nav-link {
-      display: block;
-      width: 100%;
-      text-align: left;
-      border-radius: 0;
-      padding: 0.85rem 1.25rem;
-      font-size: 0.9rem;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
+        .alert-box { padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; gap: 10px; align-items: center; }
+        .alert-info { background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; }
+        .alert-warning { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
 
-    /* ─── PAGE SECTIONS ─── */
-    .page-section { display: none; }
-    .page-section.active { display: block; }
+        .chart-wrapper { position: relative; height: 300px; width: 100%; display: flex; justify-content: center; margin-top: 10px; }
 
-    /* ─── HERO ─── */
-    .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 50%, var(--navy-light) 100%);
-      position: relative;
-      overflow: hidden;
-      padding: 5rem 1.25rem 4rem;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -60px; right: -80px;
-      width: 420px; height: 420px;
-      border-radius: 50%;
-      background: rgba(201,162,39,0.08);
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -100px; left: -60px;
-      width: 300px; height: 300px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.04);
-      pointer-events: none;
-    }
-    .hero-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-      text-align: center;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: rgba(201,162,39,0.2);
-      border: 1px solid rgba(201,162,39,0.4);
-      color: var(--gold-light);
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.35rem 0.9rem;
-      border-radius: 999px;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .hero-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 5vw, 3.2rem);
-      font-weight: 700;
-      color: white;
-      line-height: 1.2;
-      margin-bottom: 1.25rem;
-    }
-    .hero-title span { color: var(--gold-light); }
-    .hero-subtitle {
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
-      color: rgba(255,255,255,0.78);
-      max-width: 580px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-    }
-    .hero-cta-group {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .btn-gold {
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-      color: var(--navy);
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 0.85rem 2rem;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.25s;
-      box-shadow: 0 4px 15px rgba(201,162,39,0.4);
-    }
-    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,162,39,0.55); }
-    .btn-outline-white {
-      background: transparent;
-      color: white;
-      font-weight: 600;
-      font-size: 0.9rem;
-      padding: 0.85rem 2rem;
-      border-radius: 10px;
-      border: 1.5px solid rgba(255,255,255,0.45);
-      cursor: pointer;
-      transition: all 0.25s;
-    }
-    .btn-outline-white:hover { background: rgba(255,255,255,0.1); border-color: white; }
+        /* Responsive */
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .checkbox-wrapper { display: flex; flex-direction: row; align-items: flex-start; gap: 10px; margin-top: 15px; }
+        .checkbox-wrapper input[type="checkbox"] { flex-shrink: 0; margin-top: 3px; width: 20px; height: 20px; }
+        .search-bar-wrapper { display: flex; gap: 10px; margin-bottom: 2rem; }
+        .result-card { display: flex; flex-direction: row; align-items: center; justify-content: space-between; margin-top: 15px; padding: 15px; }
 
-    /* ─── STATS BAR ─── */
-    .stats-bar {
-      background: white;
-      box-shadow: 0 4px 20px rgba(15,45,94,0.12);
-    }
-    .stats-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1.25rem;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-    }
-    .stat-item {
-      padding: 1.5rem 1rem;
-      text-align: center;
-      border-right: 1px solid #e8edf5;
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--navy);
-      line-height: 1;
-    }
-    .stat-num span { color: var(--gold); }
-    .stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; font-weight: 500; }
+        @media(max-width: 768px) {
+            .form-grid, .contact-grid { grid-template-columns: 1fr; }
+        }
+        @media(max-width: 600px) {
+            .search-bar-wrapper { flex-direction: column; }
+            .search-bar-wrapper button { width: 100% !important; }
+            .result-card { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .result-card > div:last-child { align-self: flex-start; }
+            .form-container { padding: 1.5rem 1rem; }
+            .grid-3 { grid-template-columns: 1fr; gap: 1rem; }
+            .chart-wrapper { height: 250px; }
+            .card h3 { font-size: 1.5rem; }
+            .card-icon { width: 45px; height: 45px; font-size: 1.5rem; }
+        }
 
-    /* ─── SECTION STYLES ─── */
-    .section-wrap {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 4rem 1.25rem;
-    }
-    .section-header { text-align: center; margin-bottom: 3rem; }
-    .section-eyebrow {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.4rem, 3vw, 2rem);
-      font-weight: 700;
-      color: var(--navy);
-      line-height: 1.25;
-    }
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 0.92rem;
-      margin-top: 0.75rem;
-      line-height: 1.7;
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .divider-gold {
-      width: 48px; height: 3px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      border-radius: 2px;
-      margin: 1rem auto 0;
-    }
+        /* Overlays */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; display: none; backdrop-filter: blur(5px); }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* ─── SERVICE CARDS ─── */
-    .service-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-    .service-card {
-      background: white;
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      box-shadow: 0 2px 16px rgba(15,45,94,0.08);
-      border: 1.5px solid transparent;
-      cursor: pointer;
-      transition: all 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .service-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-      transform: scaleX(0);
-      transition: transform 0.3s;
-      transform-origin: left;
-    }
-    .service-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(201,162,39,0.3);
-      box-shadow: 0 8px 32px rgba(15,45,94,0.15);
-    }
-    .service-card:hover::before { transform: scaleX(1); }
-    .service-icon {
-      width: 72px; height: 72px;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1.25rem;
-      font-size: 2rem;
-    }
-    .icon-blue { background: linear-gradient(135deg, #deeeff, #b8d7ff); }
-    .icon-dark { background: linear-gradient(135deg, #e0e8f5, #c5d5ec); }
-    .icon-teal { background: linear-gradient(135deg, #d4f0e8, #a8dfc8); }
-    .service-card h3 {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--navy);
-      margin-bottom: 0.5rem;
-    }
-    .service-card p {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-    }
-    .btn-service {
-      background: var(--navy);
-      color: white;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.6rem 1.25rem;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-service:hover { background: var(--navy-light); }
+        #toast { position: fixed; bottom: -100px; right: 20px; background: var(--text-main); color: white; padding: 15px 25px; border-radius: 8px; display: flex; align-items: center; gap: 10px; transition: 0.4s; z-index: 10000; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        #toast.show { bottom: 20px; }
+        #toast.success { border-left: 5px solid var(--accent); }
+        #toast.error { border-left: 5px solid #ef4444; }
 
-    /* ─── KEUNGGULAN ─── */
-    .keunggulan-bg { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); }
-    .keunggulan-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-    }
-    .keunggulan-card {
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 14px;
-      padding: 1.75rem 1.25rem;
-      text-align: center;
-      transition: all 0.3s;
-    }
-    .keunggulan-card:hover {
-      background: rgba(255,255,255,0.14);
-      transform: translateY(-3px);
-    }
-    .keunggulan-icon {
-      width: 52px; height: 52px;
-      background: rgba(201,162,39,0.2);
-      border: 1.5px solid rgba(201,162,39,0.35);
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-      color: var(--gold-light);
-    }
-    .keunggulan-card h4 { color: white; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
-    .keunggulan-card p { color: rgba(255,255,255,0.65); font-size: 0.8rem; line-height: 1.6; }
+        #loginModal, #registerModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); display: none; }
+        .login-box { width: 90%; max-width: 400px; padding: 2rem; text-align: center; max-height: 90vh; overflow-y: auto; }
+        .link-text { color: var(--primary); cursor: pointer; text-decoration: underline; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
+        
+        footer { text-align: center; padding: 1.5rem 5%; font-size: 0.85rem; border-top: 1px solid rgba(0,0,0,0.05); background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body>
 
-    /* ─── FORMS ─── */
-    .form-page-bg {
-      background: var(--gray-bg);
-      min-height: 80%;
-    }
-    .form-container {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 3rem 1.25rem;
-    }
-    .form-card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 4px 24px rgba(15,45,94,0.1);
-      overflow: hidden;
-    }
-    .form-header {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-      padding: 2rem 2rem 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .form-header::after {
-      content: '';
-      position: absolute;
-      top: -30px; right: -30px;
-      width: 120px; height: 120px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-    }
-    .form-header-icon {
-      width: 48px; height: 48px;
-      background: rgba(201,162,39,0.25);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 1rem;
-      font-size: 1.4rem;
-    }
-    .form-header h2 { color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem; }
-    .form-header p { color: rgba(255,255,255,0.7); font-size: 0.82rem; }
-
-    /* Multi-step progress */
-    .step-progress {
-      display: flex;
-      align-items: center;
-      padding: 1.5rem 2rem;
-      border-bottom: 1px solid #eef2f8;
-      background: #fafcff;
-    }
-    .step-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex: 1;
-    }
-    .step-item:last-child { flex: none; }
-    .step-dot {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      flex-shrink: 0;
-      transition: all 0.3s;
-    }
-    .step-dot.pending { background: #e8edf5; color: var(--text-muted); }
-    .step-dot.active { background: var(--navy); color: white; box-shadow: 0 3px 10px rgba(15,45,94,0.35); }
-    .step-dot.done { background: #16a34a; color: white; }
-    .step-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
-    .step-label.active-label { color: var(--navy); }
-    .step-line { flex: 1; height: 2px; background: #e8edf5; margin: 0 0.5rem; }
-    .step-line.done-line { background: #16a34a; }
-
-    .form-body { padding: 2rem; }
-    .form-section-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--gold);
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #f0e8d0;
-    }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-    .form-row.full { grid-template-columns: 1fr; }
-    .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
-    .form-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--navy);
-    }
-    .form-label .req { color: #e02020; margin-left: 2px; }
-    .form-input, .form-select, .form-textarea {
-      border: 1.5px solid #dde4f0;
-      border-radius: 9px;
-      padding: 0.65rem 0.9rem;
-      font-size: 0.875rem;
-      font-family: inherit;
-      color: var(--text-dark);
-      background: white;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      width: 100%;
-    }
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
-      outline: none;
-      border-color: var(--navy-light);
-      box-shadow: 0 0 0 3px rgba(26,64,128,0.1);
-    }
-    .form-textarea { resize: vertical; min-height: 90px; }
-    .upload-zone {
-      border: 2px dashed #c5d2e8;
-      border-radius: 12px;
-      padding: 2rem;
-      text-align: center;
-      background: #f8faff;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .upload-zone:hover { border-color: var(--navy-light); background: #f0f5ff; }
-    .upload-zone-icon { color: var(--navy-light); margin-bottom: 0.75rem; }
-    .upload-zone p { font-size: 0.82rem; color: var(--text-muted); }
-    .upload-zone p strong { color: var(--navy); }
-    .upload-zone input[type="file"] { display: none; }
-
-    .form-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem 2rem;
-      border-top: 1px solid #eef2f8;
-      background: #fafcff;
-    }
-    .btn-prev {
-      background: #eef2f8;
-      color: var(--navy);
-      font-weight: 600;
-      font-size: 0.85rem;
-      padding: 0.7rem 1.5rem;
-      border-radius: 9px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-prev:hover { background: #dde4f0; }
-    .btn-next {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      color: white;
-      font-weight: 700;
-      font-size: 0.85rem;
-      padding: 0.7rem 1.75rem;
-      border-radius: 9px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 3px 12px rgba(15,45,94,0.3);
-    }
-    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(15,45,94,0.4); }
-    .btn-submit {
-      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-      color: var(--navy);
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 0.75rem 2rem;
-      border-radius: 9px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s;
-      box-shadow: 0 3px 12px rgba(201,162,39,0.4);
-    }
-    .btn-submit:hover { transform: translateY(-1px); }
-
-    /* Success notification */
-    .toast-success {
-      position: fixed;
-      top: 1.25rem;
-      right: 1.25rem;
-      background: white;
-      border-left: 4px solid #16a34a;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-      z-index: 9999;
-      display: none;
-      max-width: 340px;
-      animation: slideIn 0.3s ease;
-    }
-    @keyframes slideIn {
-      from { transform: translateX(60px); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    .toast-success.show { display: flex; align-items: flex-start; gap: 0.75rem; }
-    .toast-content p { font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem; }
-    .toast-content strong { font-size: 0.88rem; color: var(--navy); }
-    .toast-reg { font-size: 0.78rem; color: var(--gold); font-weight: 700; margin-top: 0.3rem; }
-
-    /* ─── PROSEDUR ─── */
-    .prosedur-steps {
-      max-width: 780px;
-      margin: 0 auto;
-    }
-    .prosedur-step {
-      display: flex;
-      gap: 1.5rem;
-      margin-bottom: 0;
-      position: relative;
-    }
-    .prosedur-step-left {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-shrink: 0;
-    }
-    .prosedur-step-num {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-weight: 700; font-size: 0.9rem;
-      box-shadow: 0 4px 12px rgba(15,45,94,0.3);
-      flex-shrink: 0;
-      z-index: 1;
-    }
-    .prosedur-step-line {
-      width: 2px;
-      flex: 1;
-      background: linear-gradient(180deg, var(--navy-light), #c5d2e8);
-      min-height: 40px;
-    }
-    .prosedur-step:last-child .prosedur-step-line { display: none; }
-    .prosedur-step-content {
-      background: white;
-      border-radius: 14px;
-      padding: 1.5rem;
-      flex: 1;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 12px rgba(15,45,94,0.08);
-      border: 1.5px solid #eef2f8;
-      transition: all 0.3s;
-    }
-    .prosedur-step-content:hover {
-      border-color: rgba(201,162,39,0.3);
-      box-shadow: 0 4px 20px rgba(15,45,94,0.14);
-    }
-    .prosedur-step-content .step-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px; height: 36px;
-      background: linear-gradient(135deg, #deeeff, #c0d8ff);
-      border-radius: 10px;
-      margin-bottom: 0.75rem;
-      color: var(--navy-light);
-    }
-    .prosedur-step-content h4 { font-weight: 700; color: var(--navy); font-size: 0.95rem; margin-bottom: 0.35rem; }
-    .prosedur-step-content p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
-
-    /* ─── TRACKING ─── */
-    .tracking-wrap { max-width: 700px; margin: 0 auto; }
-    .tracking-card {
-      background: white;
-      border-radius: 18px;
-      padding: 2.5rem;
-      box-shadow: 0 4px 24px rgba(15,45,94,0.1);
-      margin-bottom: 1.5rem;
-    }
-    .tracking-result {
-      display: none;
-    }
-    .tracking-result.show { display: block; }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.5rem 1.1rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-    .status-diproses { background: #fef9ec; color: #b45309; border: 1.5px solid #fde68a; }
-    .status-diverifikasi { background: #eff6ff; color: #1d4ed8; border: 1.5px solid #bfdbfe; }
-    .status-disetujui { background: #f0fdf4; color: #15803d; border: 1.5px solid #bbf7d0; }
-    .status-ditolak { background: #fff1f2; color: #be123c; border: 1.5px solid #fecdd3; }
-
-    .progress-timeline {
-      display: flex;
-      align-items: center;
-      margin: 1.5rem 0;
-      gap: 0;
-    }
-    .prog-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      position: relative;
-    }
-    .prog-step::after {
-      content: '';
-      position: absolute;
-      top: 14px;
-      left: calc(50% + 14px);
-      right: calc(-50% + 14px);
-      height: 2px;
-      background: #e8edf5;
-      z-index: 0;
-    }
-    .prog-step:last-child::after { display: none; }
-    .prog-step.done::after { background: #16a34a; }
-    .prog-dot {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.65rem;
-      font-weight: 700;
-      position: relative;
-      z-index: 1;
-    }
-    .prog-dot.inactive { background: #e8edf5; color: var(--text-muted); }
-    .prog-dot.done { background: #16a34a; color: white; }
-    .prog-dot.current { background: var(--navy); color: white; box-shadow: 0 0 0 4px rgba(15,45,94,0.15); }
-    .prog-label { font-size: 0.65rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center; font-weight: 500; }
-
-    /* ─── TENTANG KAMI ─── */
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-    .visi-misi-card {
-      background: white;
-      border-radius: 14px;
-      padding: 1.75rem;
-      box-shadow: 0 2px 12px rgba(15,45,94,0.08);
-      margin-bottom: 1.25rem;
-    }
-    .visi-misi-card h4 {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 700;
-      color: var(--navy);
-      font-size: 0.95rem;
-      margin-bottom: 0.75rem;
-    }
-    .visi-misi-card p, .visi-misi-card ul {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.7;
-    }
-    .visi-misi-card ul { padding-left: 1.25rem; }
-    .visi-misi-card ul li { margin-bottom: 0.35rem; }
-    .about-img {
-      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
-      border-radius: 18px;
-      padding: 2.5rem;
-      color: white;
-      position: sticky;
-      top: 90px;
-    }
-    .about-img h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 1rem; }
-    .about-img p { font-size: 0.85rem; color: rgba(255,255,255,0.75); line-height: 1.7; margin-bottom: 1.25rem; }
-    .about-stat {
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .about-stat-icon { color: var(--gold-light); }
-    .about-stat p { margin: 0; font-size: 0.8rem; color: rgba(255,255,255,0.8); }
-    .about-stat strong { color: white; font-size: 0.9rem; }
-
-    /* ─── KONTAK ─── */
-    .kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
-    .kontak-info-card {
-      background: white;
-      border-radius: 14px;
-      padding: 2rem;
-      box-shadow: 0 2px 14px rgba(15,45,94,0.08);
-    }
-    .kontak-item {
-      display: flex;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #f0f4fb;
-    }
-    .kontak-item:last-child { border-bottom: none; }
-    .kontak-item-icon {
-      width: 40px; height: 40px;
-      background: #eef2fb;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      color: var(--navy-light);
-    }
-    .kontak-item h5 { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
-    .kontak-item p { font-size: 0.88rem; color: var(--navy); font-weight: 500; line-height: 1.5; }
-    .kontak-form-card {
-      background: white;
-      border-radius: 14px;
-      padding: 2rem;
-      box-shadow: 0 2px 14px rgba(15,45,94,0.08);
-    }
-
-    /* ─── FOOTER ─── */
-    .footer {
-      background: var(--navy);
-      color: rgba(255,255,255,0.7);
-      padding: 2.5rem 1.25rem;
-      text-align: center;
-      font-size: 0.82rem;
-    }
-    .footer strong { color: var(--gold-light); }
-
-    /* ─── RESPONSIVE ─── */
-    @media (max-width: 900px) {
-      .nav-links { display: none; }
-      .hamburger-btn { display: flex; align-items: center; justify-content: center; }
-      .service-grid { grid-template-columns: 1fr; gap: 1rem; }
-      .keunggulan-grid { grid-template-columns: repeat(2, 1fr); }
-      .about-grid, .kontak-grid { grid-template-columns: 1fr; }
-      .stats-inner { grid-template-columns: repeat(3, 1fr); }
-      .form-row { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 600px) {
-      .stats-inner { grid-template-columns: 1fr; }
-      .stat-item { border-right: none; border-bottom: 1px solid #e8edf5; }
-      .keunggulan-grid { grid-template-columns: 1fr; }
-      .progress-timeline { flex-wrap: wrap; gap: 1rem; }
-      .prog-step::after { display: none; }
-      .form-body { padding: 1.25rem; }
-      .form-nav { padding: 1rem 1.25rem; }
-      .step-progress { padding: 1rem 1.25rem; gap: 0.25rem; }
-      .step-label { display: none; }
-    }
-
-    /* Service type tabs */
-    .service-tabs {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .service-tab {
-      padding: 0.6rem 1.25rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1.5px solid #dde4f0;
-      background: white;
-      color: var(--text-muted);
-      transition: all 0.2s;
-    }
-    .service-tab.active {
-      background: var(--navy);
-      color: white;
-      border-color: var(--navy);
-    }
-    .service-form { display: none; }
-    .service-form.active { display: block; }
-  </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
- </head>
- <body>
-  <div class="app-wrapper"><!-- TOAST NOTIFICATION -->
-   <div class="toast-success" id="toastSuccess">
-    <div style="color:#16a34a; flex-shrink:0; margin-top:2px;"><i data-lucide="check-circle-2" style="width:22px;height:22px;"></i>
-    </div>
-    <div class="toast-content"><strong>Pengajuan Berhasil Dikirim!</strong>
-     <p>Data Anda telah diterima oleh sistem.</p>
-     <p class="toast-reg" id="toastRegNum"></p>
-    </div>
-   </div><!-- ═══ NAVBAR ═══ -->
-   <nav class="navbar">
-    <div class="nav-inner">
-     <div class="logo-area" onclick="showPage('beranda')">
-      <div class="logo-badge">
-       🏛️
-      </div>
-      <div class="logo-text">
-       <div class="app-name-display" id="appNameDisplay">
-        DUKCAPIL KKT
-       </div>
-       <div class="logo-sub">
-        Kab. Kepulauan Tanimbar
-       </div>
-      </div>
-     </div>
-     <div class="nav-links"><button class="nav-link active" onclick="showPage('beranda')">Beranda</button> <button class="nav-link" onclick="showPage('layanan')">Layanan</button> <button class="nav-link" onclick="showPage('prosedur')">Prosedur</button> <button class="nav-link" onclick="showPage('tracking')">Tracking</button> <button class="nav-link" onclick="showPage('tentang')">Tentang Kami</button> <button class="nav-link" onclick="showPage('kontak')">Kontak</button>
-     </div><button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Buka menu"> <i data-lucide="menu" style="width:22px;height:22px;"></i> </button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu"><button class="nav-link" onclick="showPage('beranda'); closeMobileMenu()">🏠 Beranda</button> <button class="nav-link" onclick="showPage('layanan'); closeMobileMenu()">📋 Layanan</button> <button class="nav-link" onclick="showPage('prosedur'); closeMobileMenu()">🧭 Prosedur</button> <button class="nav-link" onclick="showPage('tracking'); closeMobileMenu()">🔍 Tracking</button> <button class="nav-link" onclick="showPage('tentang'); closeMobileMenu()">ℹ️ Tentang Kami</button> <button class="nav-link" onclick="showPage('kontak'); closeMobileMenu()">📞 Kontak</button>
-    </div>
-   </nav><!-- ═══ BERANDA ═══ -->
-   <section class="page-section active" id="page-beranda"><!-- Hero -->
-    <div class="hero">
-     <div class="hero-inner">
-      <div class="hero-badge"><i data-lucide="shield-check" style="width:13px;height:13px;"></i> Sistem Layanan Kependudukan Digital
-      </div>
-      <h1 class="hero-title" id="heroTitleEl">Layanan Proaktif <span>Lahir dan Mati</span></h1>
-      <p class="hero-subtitle" id="heroSubtitleEl">Mempermudah pelaporan peristiwa kependudukan secara cepat, mudah, dan akurat untuk seluruh masyarakat Kabupaten Kepulauan Tanimbar.</p>
-      <div class="hero-cta-group"><button class="btn-gold" onclick="showPage('layanan')"> Ajukan Sekarang → </button> <button class="btn-outline-white" onclick="showPage('prosedur')"> Lihat Prosedur </button>
-      </div>
-     </div>
-    </div><!-- Stats Bar -->
-    <div class="stats-bar">
-     <div class="stats-inner">
-      <div class="stat-item">
-       <div class="stat-num">
-        1<span>,247</span>
-       </div>
-       <div class="stat-label">
-        Total Pengajuan
-       </div>
-      </div>
-      <div class="stat-item">
-       <div class="stat-num">
-        <span>89</span>
-       </div>
-       <div class="stat-label">
-        Sedang Diproses
-       </div>
-      </div>
-      <div class="stat-item">
-       <div class="stat-num">
-        1<span>,158</span>
-       </div>
-       <div class="stat-label">
-        Layanan Selesai
-       </div>
-      </div>
-     </div>
-    </div><!-- Layanan Section -->
-    <div style="background: var(--gray-bg);">
-     <div class="section-wrap">
-      <div class="section-header"><span class="section-eyebrow">Pilih Layanan</span>
-       <h2 class="section-title">Layanan Pencatatan Sipil</h2>
-       <p class="section-desc">Kami menyediakan tiga layanan utama pencatatan kependudukan yang dapat diajukan secara digital.</p>
-       <div class="divider-gold"></div>
-      </div>
-      <div class="service-grid">
-       <div class="service-card" onclick="openServiceForm('kelahiran')">
-        <div class="service-icon icon-blue">
-         👶
-        </div>
-        <h3>Pengajuan Kelahiran</h3>
-        <p>Daftarkan kelahiran bayi untuk mendapatkan Akta Kelahiran resmi dari Dukcapil Kab. Kepulauan Tanimbar.</p><button class="btn-service">Ajukan Sekarang</button>
-       </div>
-       <div class="service-card" onclick="openServiceForm('kematian')">
-        <div class="service-icon icon-dark">
-         ⚰️
-        </div>
-        <h3>Pengajuan Kematian</h3>
-        <p>Laporkan peristiwa kematian untuk memperoleh Akta Kematian dan pembaruan data kependudukan.</p><button class="btn-service">Ajukan Sekarang</button>
-       </div>
-       <div class="service-card" onclick="openServiceForm('lahirmati')">
-        <div class="service-icon icon-teal">
-         📄
-        </div>
-        <h3>Pengajuan Lahir Mati</h3>
-        <p>Laporan khusus untuk peristiwa lahir mati guna keperluan administrasi dan pencatatan medis.</p><button class="btn-service">Ajukan Sekarang</button>
-       </div>
-      </div>
-     </div>
-    </div><!-- Keunggulan -->
-    <div class="keunggulan-bg">
-     <div class="section-wrap">
-      <div class="section-header"><span class="section-eyebrow" style="color: var(--gold-light);">Mengapa Kami</span>
-       <h2 class="section-title" style="color: white;">Keunggulan Layanan</h2>
-       <div class="divider-gold"></div>
-      </div>
-      <div class="keunggulan-grid">
-       <div class="keunggulan-card">
-        <div class="keunggulan-icon">
-         <i data-lucide="zap" style="width:22px;height:22px;"></i>
-        </div>
-        <h4>Cepat</h4>
-        <p>Proses pengajuan dan verifikasi dilakukan secara digital sehingga lebih efisien.</p>
-       </div>
-       <div class="keunggulan-card">
-        <div class="keunggulan-icon">
-         <i data-lucide="smartphone" style="width:22px;height:22px;"></i>
-        </div>
-        <h4>Mudah</h4>
-        <p>Formulir digital yang sederhana dapat diakses dari mana saja dan kapan saja.</p>
-       </div>
-       <div class="keunggulan-card">
-        <div class="keunggulan-icon">
-         <i data-lucide="eye" style="width:22px;height:22px;"></i>
-        </div>
-        <h4>Transparan</h4>
-        <p>Pantau status pengajuan secara real-time melalui fitur tracking nomor registrasi.</p>
-       </div>
-       <div class="keunggulan-card">
-        <div class="keunggulan-icon">
-         <i data-lucide="link-2" style="width:22px;height:22px;"></i>
-        </div>
-        <h4>Terintegrasi</h4>
-        <p>Sistem terintegrasi dengan database nasional Dukcapil untuk akurasi data.</p>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- ═══ LAYANAN ═══ -->
-   <section class="page-section" id="page-layanan">
-    <div class="form-container">
-     <div style="margin-bottom: 1.5rem;">
-      <h2 style="font-family:'Playfair Display',serif; color:var(--navy); font-size:1.6rem; margin-bottom:0.5rem;">Formulir Pengajuan Layanan</h2>
-      <p style="color:var(--text-muted); font-size:0.88rem;">Pilih jenis layanan yang ingin Anda ajukan</p>
-     </div>
-     <div class="service-tabs"><button class="service-tab active" id="tab-kelahiran" onclick="switchTab('kelahiran')">👶 Kelahiran</button> <button class="service-tab" id="tab-kematian" onclick="switchTab('kematian')">⚰️ Kematian</button> <button class="service-tab" id="tab-lahirmati" onclick="switchTab('lahirmati')">📄 Lahir Mati</button>
-     </div><!-- KELAHIRAN FORM -->
-     <div class="service-form active" id="form-kelahiran">
-      <div class="form-card">
-       <div class="form-header">
-        <div class="form-header-icon">
-         👶
-        </div>
-        <h2>Formulir Pengajuan Kelahiran</h2>
-        <p>Isi data dengan lengkap dan benar sesuai dokumen resmi</p>
-       </div><!-- Step progress -->
-       <div class="step-progress" id="kelahiran-stepbar">
-        <div class="step-item">
-         <div class="step-dot active" id="k-dot-1">
-          1
-         </div><span class="step-label active-label">Data Petugas</span>
-        </div>
-        <div class="step-line" id="k-line-1"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="k-dot-2">
-          2
-         </div><span class="step-label">Data Kelahiran</span>
-        </div>
-        <div class="step-line" id="k-line-2"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="k-dot-3">
-          3
-         </div><span class="step-label">Upload &amp; Kirim</span>
-        </div>
-       </div><!-- Steps -->
-       <div class="form-body" id="k-step-1">
-        <p class="form-section-title">Data Petugas / Pelapor</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-nama-petugas">Nama Petugas <span class="req">*</span></label> <input class="form-input" id="k-nama-petugas" type="text" placeholder="Nama lengkap petugas">
-         </div>
-         <div class="form-group"><label class="form-label" for="k-faskes">Fasilitas Kesehatan <span class="req">*</span></label> <input class="form-input" id="k-faskes" type="text" placeholder="Nama puskesmas/RS">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-jabatan">Jabatan / Profesi <span class="req">*</span></label> <select class="form-select" id="k-jabatan"> <option value="">Pilih jabatan</option> <option>Bidan</option><option>Dokter</option><option>Perawat</option><option>Tenaga Kesehatan Lain</option> </select>
-         </div>
-         <div class="form-group"><label class="form-label" for="k-telp-petugas">No. HP / WA Petugas <span class="req">*</span></label> <input class="form-input" id="k-telp-petugas" type="tel" placeholder="08xxxxxxxxxx">
-         </div>
-        </div>
-        <div class="form-row full">
-         <div class="form-group"><label class="form-label" for="k-kecamatan">Kecamatan <span class="req">*</span></label> <select class="form-select" id="k-kecamatan"> <option value="">Pilih kecamatan</option> <option>Saumlaki</option><option>Tanimbar Selatan</option><option>Tanimbar Utara</option><option>Wuarlabobar</option><option>Nirunmas</option><option>Kormomolin</option><option>Selaru</option><option>Wertamrian</option><option>Wermaktian</option><option>Yaru</option> </select>
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="k-step-2" style="display:none;">
-        <p class="form-section-title">Data Bayi &amp; Orang Tua</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-nama-bayi">Nama Bayi (jika ada) <span class="req">*</span></label> <input class="form-input" id="k-nama-bayi" type="text" placeholder="Nama bayi">
-         </div>
-         <div class="form-group"><label class="form-label" for="k-jk-bayi">Jenis Kelamin <span class="req">*</span></label> <select class="form-select" id="k-jk-bayi"> <option value="">Pilih</option> <option>Laki-laki</option><option>Perempuan</option> </select>
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-tgl-lahir">Tanggal Lahir <span class="req">*</span></label> <input class="form-input" id="k-tgl-lahir" type="date">
-         </div>
-         <div class="form-group"><label class="form-label" for="k-tempat-lahir">Tempat Lahir <span class="req">*</span></label> <input class="form-input" id="k-tempat-lahir" type="text" placeholder="Kota/kabupaten lahir">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-nama-ibu">Nama Ibu <span class="req">*</span></label> <input class="form-input" id="k-nama-ibu" type="text" placeholder="Nama lengkap ibu">
-         </div>
-         <div class="form-group"><label class="form-label" for="k-nik-ibu">NIK Ibu <span class="req">*</span></label> <input class="form-input" id="k-nik-ibu" type="text" maxlength="16" placeholder="16 digit NIK">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="k-nama-ayah">Nama Ayah <span class="req">*</span></label> <input class="form-input" id="k-nama-ayah" type="text" placeholder="Nama lengkap ayah">
-         </div>
-         <div class="form-group"><label class="form-label" for="k-nik-ayah">NIK Ayah <span class="req">*</span></label> <input class="form-input" id="k-nik-ayah" type="text" maxlength="16" placeholder="16 digit NIK">
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="k-step-3" style="display:none;">
-        <p class="form-section-title">Upload Dokumen Pendukung</p>
-        <div class="form-row full" style="margin-bottom:1.25rem;">
-         <div class="form-group"><label class="form-label">Surat Keterangan Lahir dari Faskes <span class="req">*</span></label> <label class="upload-zone"> <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'k-file-1-name')">
-           <div class="upload-zone-icon">
-            <i data-lucide="upload-cloud" style="width:32px;height:32px;"></i>
-           </div><p><strong>Klik untuk upload</strong> atau seret file ke sini</p><p style="font-size:0.73rem; margin-top:0.3rem;">Format: PDF, JPG, PNG (maks. 5MB)</p><p id="k-file-1-name" style="color:var(--navy); font-weight:600; margin-top:0.5rem; font-size:0.8rem;"></p></label>
-         </div>
-        </div>
-        <div class="form-row full">
-         <div class="form-group"><label class="form-label">KTP Orang Tua (Salah Satu) <span class="req">*</span></label> <label class="upload-zone"> <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'k-file-2-name')">
-           <div class="upload-zone-icon">
-            <i data-lucide="id-card" style="width:32px;height:32px;"></i>
-           </div><p><strong>Upload KTP</strong> orang tua</p><p id="k-file-2-name" style="color:var(--navy); font-weight:600; margin-top:0.5rem; font-size:0.8rem;"></p></label>
-         </div>
-        </div>
-        <div class="form-row full" style="margin-top:1rem;">
-         <div class="form-group"><label class="form-label" for="k-catatan">Catatan Tambahan</label> <textarea class="form-textarea" id="k-catatan" placeholder="Informasi tambahan yang perlu disampaikan..."></textarea>
-         </div>
-        </div>
-       </div>
-       <div class="form-nav"><button class="btn-prev" id="k-btn-prev" onclick="stepNav('kelahiran','prev')" style="visibility:hidden;">← Sebelumnya</button> <span style="font-size:0.78rem; color:var(--text-muted);" id="k-step-indicator">Langkah 1 dari 3</span> <button class="btn-next" id="k-btn-next" onclick="stepNav('kelahiran','next')">Selanjutnya →</button>
-       </div>
-      </div>
-     </div><!-- KEMATIAN FORM -->
-     <div class="service-form" id="form-kematian">
-      <div class="form-card">
-       <div class="form-header">
-        <div class="form-header-icon">
-         ⚰️
-        </div>
-        <h2>Formulir Pengajuan Kematian</h2>
-        <p>Lengkapi data kematian dengan informasi yang valid</p>
-       </div>
-       <div class="step-progress">
-        <div class="step-item">
-         <div class="step-dot active" id="m-dot-1">
-          1
-         </div><span class="step-label active-label">Data Petugas</span>
-        </div>
-        <div class="step-line" id="m-line-1"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="m-dot-2">
-          2
-         </div><span class="step-label">Data Kematian</span>
-        </div>
-        <div class="step-line" id="m-line-2"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="m-dot-3">
-          3
-         </div><span class="step-label">Upload &amp; Kirim</span>
-        </div>
-       </div>
-       <div class="form-body" id="m-step-1">
-        <p class="form-section-title">Data Petugas / Pelapor</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="m-nama-petugas">Nama Petugas <span class="req">*</span></label> <input class="form-input" id="m-nama-petugas" type="text" placeholder="Nama lengkap petugas">
-         </div>
-         <div class="form-group"><label class="form-label" for="m-faskes">Fasilitas Kesehatan <span class="req">*</span></label> <input class="form-input" id="m-faskes" type="text" placeholder="Nama puskesmas/RS">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="m-jabatan">Jabatan / Profesi <span class="req">*</span></label> <select class="form-select" id="m-jabatan"> <option value="">Pilih jabatan</option> <option>Bidan</option><option>Dokter</option><option>Perawat</option><option>Tenaga Kesehatan Lain</option> </select>
-         </div>
-         <div class="form-group"><label class="form-label" for="m-kecamatan">Kecamatan <span class="req">*</span></label> <select class="form-select" id="m-kecamatan"> <option value="">Pilih kecamatan</option> <option>Saumlaki</option><option>Tanimbar Selatan</option><option>Tanimbar Utara</option><option>Wuarlabobar</option><option>Nirunmas</option><option>Kormomolin</option><option>Selaru</option><option>Wertamrian</option><option>Wermaktian</option><option>Yaru</option> </select>
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="m-step-2" style="display:none;">
-        <p class="form-section-title">Data Almarhum / Almarhumah</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="m-nama">Nama Almarhum/ah <span class="req">*</span></label> <input class="form-input" id="m-nama" type="text" placeholder="Nama lengkap">
-         </div>
-         <div class="form-group"><label class="form-label" for="m-nik">NIK <span class="req">*</span></label> <input class="form-input" id="m-nik" type="text" maxlength="16" placeholder="16 digit NIK">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="m-tgl-mati">Tanggal Kematian <span class="req">*</span></label> <input class="form-input" id="m-tgl-mati" type="date">
-         </div>
-         <div class="form-group"><label class="form-label" for="m-tempat-mati">Tempat Kematian <span class="req">*</span></label> <input class="form-input" id="m-tempat-mati" type="text" placeholder="Lokasi kematian">
-         </div>
-        </div>
-        <div class="form-row full">
-         <div class="form-group"><label class="form-label" for="m-penyebab">Penyebab Kematian <span class="req">*</span></label> <input class="form-input" id="m-penyebab" type="text" placeholder="Penyebab kematian sesuai surat keterangan dokter">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="m-umur">Umur saat Meninggal <span class="req">*</span></label> <input class="form-input" id="m-umur" type="number" min="0" placeholder="Tahun">
-         </div>
-         <div class="form-group"><label class="form-label" for="m-jk">Jenis Kelamin <span class="req">*</span></label> <select class="form-select" id="m-jk"> <option value="">Pilih</option> <option>Laki-laki</option><option>Perempuan</option> </select>
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="m-step-3" style="display:none;">
-        <p class="form-section-title">Upload Dokumen</p>
-        <div class="form-row full" style="margin-bottom:1.25rem;">
-         <div class="form-group"><label class="form-label">Surat Keterangan Kematian dari Dokter <span class="req">*</span></label> <label class="upload-zone"> <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'m-file-1-name')">
-           <div class="upload-zone-icon">
-            <i data-lucide="upload-cloud" style="width:32px;height:32px;"></i>
-           </div><p><strong>Klik untuk upload</strong> dokumen</p><p id="m-file-1-name" style="color:var(--navy); font-weight:600; margin-top:0.5rem; font-size:0.8rem;"></p></label>
-         </div>
-        </div>
-        <div class="form-row full">
-         <div class="form-group"><label class="form-label" for="m-catatan">Catatan Tambahan</label> <textarea class="form-textarea" id="m-catatan" placeholder="Informasi tambahan..."></textarea>
-         </div>
-        </div>
-       </div>
-       <div class="form-nav"><button class="btn-prev" id="m-btn-prev" onclick="stepNav('mati','prev')" style="visibility:hidden;">← Sebelumnya</button> <span style="font-size:0.78rem; color:var(--text-muted);" id="m-step-indicator">Langkah 1 dari 3</span> <button class="btn-next" id="m-btn-next" onclick="stepNav('mati','next')">Selanjutnya →</button>
-       </div>
-      </div>
-     </div><!-- LAHIR MATI FORM -->
-     <div class="service-form" id="form-lahirmati">
-      <div class="form-card">
-       <div class="form-header">
-        <div class="form-header-icon">
-         📄
-        </div>
-        <h2>Formulir Pengajuan Lahir Mati</h2>
-        <p>Pelaporan khusus peristiwa bayi lahir dalam keadaan mati</p>
-       </div>
-       <div class="step-progress">
-        <div class="step-item">
-         <div class="step-dot active" id="lm-dot-1">
-          1
-         </div><span class="step-label active-label">Data Petugas</span>
-        </div>
-        <div class="step-line" id="lm-line-1"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="lm-dot-2">
-          2
-         </div><span class="step-label">Data Utama</span>
-        </div>
-        <div class="step-line" id="lm-line-2"></div>
-        <div class="step-item">
-         <div class="step-dot pending" id="lm-dot-3">
-          3
-         </div><span class="step-label">Upload &amp; Kirim</span>
-        </div>
-       </div>
-       <div class="form-body" id="lm-step-1">
-        <p class="form-section-title">Data Petugas / Pelapor</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="lm-nama-petugas">Nama Petugas <span class="req">*</span></label> <input class="form-input" id="lm-nama-petugas" type="text" placeholder="Nama lengkap petugas">
-         </div>
-         <div class="form-group"><label class="form-label" for="lm-faskes">Fasilitas Kesehatan <span class="req">*</span></label> <input class="form-input" id="lm-faskes" type="text" placeholder="Nama puskesmas/RS">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="lm-jabatan">Jabatan <span class="req">*</span></label> <select class="form-select" id="lm-jabatan"> <option value="">Pilih jabatan</option> <option>Bidan</option><option>Dokter</option><option>Perawat</option><option>Tenaga Kesehatan Lain</option> </select>
-         </div>
-         <div class="form-group"><label class="form-label" for="lm-kecamatan">Kecamatan <span class="req">*</span></label> <select class="form-select" id="lm-kecamatan"> <option value="">Pilih kecamatan</option> <option>Saumlaki</option><option>Tanimbar Selatan</option><option>Tanimbar Utara</option><option>Wuarlabobar</option><option>Nirunmas</option><option>Kormomolin</option><option>Selaru</option><option>Wertamrian</option><option>Wermaktian</option><option>Yaru</option> </select>
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="lm-step-2" style="display:none;">
-        <p class="form-section-title">Data Peristiwa Lahir Mati</p>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="lm-nama-ibu">Nama Ibu <span class="req">*</span></label> <input class="form-input" id="lm-nama-ibu" type="text" placeholder="Nama ibu kandung">
-         </div>
-         <div class="form-group"><label class="form-label" for="lm-nik-ibu">NIK Ibu <span class="req">*</span></label> <input class="form-input" id="lm-nik-ibu" type="text" maxlength="16" placeholder="16 digit NIK">
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="lm-tgl">Tanggal Kejadian <span class="req">*</span></label> <input class="form-input" id="lm-tgl" type="date">
-         </div>
-         <div class="form-group"><label class="form-label" for="lm-jk">Jenis Kelamin Bayi <span class="req">*</span></label> <select class="form-select" id="lm-jk"> <option value="">Pilih</option> <option>Laki-laki</option><option>Perempuan</option> </select>
-         </div>
-        </div>
-        <div class="form-row">
-         <div class="form-group"><label class="form-label" for="lm-usia-kandungan">Usia Kandungan (minggu) <span class="req">*</span></label> <input class="form-input" id="lm-usia-kandungan" type="number" min="0" placeholder="Contoh: 28">
-         </div>
-         <div class="form-group"><label class="form-label" for="lm-bb">Berat Badan (gram)</label> <input class="form-input" id="lm-bb" type="number" min="0" placeholder="Berat bayi">
-         </div>
-        </div>
-        <div class="form-row full">
-         <div class="form-group"><label class="form-label" for="lm-keterangan">Keterangan Medis <span class="req">*</span></label> <textarea class="form-textarea" id="lm-keterangan" placeholder="Keterangan medis dari dokter/bidan..."></textarea>
-         </div>
-        </div>
-       </div>
-       <div class="form-body" id="lm-step-3" style="display:none;">
-        <p class="form-section-title">Upload Dokumen</p>
-        <div class="form-row full" style="margin-bottom:1.25rem;">
-         <div class="form-group"><label class="form-label">Surat Keterangan Lahir Mati dari Dokter <span class="req">*</span></label> <label class="upload-zone"> <input type="file" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this,'lm-file-1-name')">
-           <div class="upload-zone-icon">
-            <i data-lucide="upload-cloud" style="width:32px;height:32px;"></i>
-           </div><p><strong>Klik untuk upload</strong> dokumen</p><p id="lm-file-1-name" style="color:var(--navy); font-weight:600; margin-top:0.5rem; font-size:0.8rem;"></p></label>
-         </div>
-        </div>
-       </div>
-       <div class="form-nav"><button class="btn-prev" id="lm-btn-prev" onclick="stepNav('lahirmati','prev')" style="visibility:hidden;">← Sebelumnya</button> <span style="font-size:0.78rem; color:var(--text-muted);" id="lm-step-indicator">Langkah 1 dari 3</span> <button class="btn-next" id="lm-btn-next" onclick="stepNav('lahirmati','next')">Selanjutnya →</button>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- ═══ PROSEDUR ═══ -->
-   <section class="page-section" id="page-prosedur">
-    <div class="section-wrap">
-     <div class="section-header"><span class="section-eyebrow">Alur Proses</span>
-      <h2 class="section-title">Prosedur Pengajuan Layanan</h2>
-      <p class="section-desc">Berikut tahapan proses pengajuan hingga penerbitan dokumen kependudukan Anda.</p>
-      <div class="divider-gold"></div>
-     </div>
-     <div class="prosedur-steps">
-      <div class="prosedur-step">
-       <div class="prosedur-step-left">
-        <div class="prosedur-step-num">
-         1
-        </div>
-        <div class="prosedur-step-line"></div>
-       </div>
-       <div class="prosedur-step-content">
-        <div class="step-icon">
-         <i data-lucide="file-edit" style="width:18px;height:18px;"></i>
-        </div>
-        <h4>Petugas Mengisi Formulir</h4>
-        <p>Tenaga kesehatan atau petugas yang berwenang mengisi formulir digital dengan data lengkap dan melampirkan dokumen pendukung yang diperlukan.</p>
-       </div>
-      </div>
-      <div class="prosedur-step">
-       <div class="prosedur-step-left">
-        <div class="prosedur-step-num">
-         2
-        </div>
-        <div class="prosedur-step-line"></div>
-       </div>
-       <div class="prosedur-step-content">
-        <div class="step-icon">
-         <i data-lucide="send" style="width:18px;height:18px;"></i>
-        </div>
-        <h4>Data Dikirim ke Sistem</h4>
-        <p>Setelah pengajuan dikirim, sistem secara otomatis membuat nomor registrasi unik dan mengirim notifikasi penerimaan kepada petugas pelapor.</p>
-       </div>
-      </div>
-      <div class="prosedur-step">
-       <div class="prosedur-step-left">
-        <div class="prosedur-step-num">
-         3
-        </div>
-        <div class="prosedur-step-line"></div>
-       </div>
-       <div class="prosedur-step-content">
-        <div class="step-icon">
-         <i data-lucide="search-check" style="width:18px;height:18px;"></i>
-        </div>
-        <h4>Verifikasi oleh Dukcapil</h4>
-        <p>Petugas Dukcapil melakukan verifikasi data dan dokumen yang diunggah. Jika ada kekurangan, petugas akan dihubungi untuk melengkapi berkas.</p>
-       </div>
-      </div>
-      <div class="prosedur-step">
-       <div class="prosedur-step-left">
-        <div class="prosedur-step-num">
-         4
-        </div>
-        <div class="prosedur-step-line"></div>
-       </div>
-       <div class="prosedur-step-content">
-        <div class="step-icon">
-         <i data-lucide="printer" style="width:18px;height:18px;"></i>
-        </div>
-        <h4>Proses Penerbitan Dokumen</h4>
-        <p>Setelah verifikasi selesai, Dukcapil memproses penerbitan dokumen kependudukan resmi (Akta Kelahiran / Akta Kematian).</p>
-       </div>
-      </div>
-      <div class="prosedur-step">
-       <div class="prosedur-step-left">
-        <div class="prosedur-step-num" style="background: linear-gradient(135deg,#16a34a,#22c55e);">
-         ✓
-        </div>
-        <div class="prosedur-step-line"></div>
-       </div>
-       <div class="prosedur-step-content" style="border-color: rgba(22,163,74,0.25);">
-        <div class="step-icon" style="background: linear-gradient(135deg,#dcfce7,#bbf7d0); color:#16a34a;">
-         <i data-lucide="check-circle-2" style="width:18px;height:18px;"></i>
-        </div>
-        <h4>Dokumen Selesai</h4>
-        <p>Dokumen resmi telah selesai diterbitkan dan siap diambil di kantor Dukcapil atau akan dikirimkan sesuai prosedur yang berlaku.</p>
-       </div>
-      </div>
-     </div>
-    </div>
-   </section><!-- ═══ TRACKING ═══ -->
-   <section class="page-section" id="page-tracking">
-    <div class="section-wrap">
-     <div class="section-header"><span class="section-eyebrow">Pantau Status</span>
-      <h2 class="section-title">Lacak Status Pengajuan</h2>
-      <p class="section-desc">Masukkan nomor registrasi yang Anda terima saat pengajuan untuk melihat status terkini.</p>
-      <div class="divider-gold"></div>
-     </div>
-     <div class="tracking-wrap">
-      <div class="tracking-card"><label class="form-label" for="trackingInput" style="font-size:0.9rem; margin-bottom:0.75rem; display:block;">Nomor Registrasi</label>
-       <div style="display:flex; gap:0.75rem;"><input class="form-input" id="trackingInput" type="text" placeholder="Contoh: REG-KLH-2024-0001" style="flex:1;"> <button class="btn-next" onclick="doTracking()" style="padding:0.65rem 1.5rem; white-space:nowrap;"> <i data-lucide="search" style="width:16px;height:16px; display:inline; vertical-align:middle; margin-right:0.3rem;"></i>Cek Status </button>
-       </div>
-       <p style="font-size:0.76rem; color:var(--text-muted); margin-top:0.65rem;">Contoh nomor registrasi: REG-KLH-2024-0001 | REG-KMT-2024-0012 | REG-LMT-2024-0005</p>
-      </div>
-      <div class="tracking-result" id="trackingResult">
-       <div class="tracking-card">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
-         <div>
-          <p style="font-size:0.75rem; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.35rem;">Nomor Registrasi</p>
-          <p style="font-weight:800; color:var(--navy); font-size:1rem;" id="trackRegNum"></p>
-         </div>
-         <div id="trackStatusBadge"></div>
-        </div>
-        <div class="progress-timeline" id="trackTimeline">
-         <div class="prog-step done">
-          <div class="prog-dot done">
-           <i data-lucide="check" style="width:12px;height:12px;"></i>
-          </div><span class="prog-label">Diterima</span>
-         </div>
-         <div class="prog-step" id="prog-diproses">
-          <div class="prog-dot inactive" id="prog-dot-2">
-           2
-          </div><span class="prog-label">Diproses</span>
-         </div>
-         <div class="prog-step" id="prog-diverifikasi">
-          <div class="prog-dot inactive" id="prog-dot-3">
-           3
-          </div><span class="prog-label">Diverifikasi</span>
-         </div>
-         <div class="prog-step" id="prog-disetujui">
-          <div class="prog-dot inactive" id="prog-dot-4">
-           4
-          </div><span class="prog-label">Selesai</span>
-         </div>
-        </div>
-        <div style="background:#f8faff; border-radius:10px; padding:1.25rem; border:1px solid #eef2f8;">
-         <p style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--gold); margin-bottom:0.75rem;">Detail Pengajuan</p>
-         <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
-          <div>
-           <p style="font-size:0.73rem; color:var(--text-muted);">Jenis Layanan</p>
-           <p style="font-size:0.88rem; font-weight:600; color:var(--navy);" id="trackJenis"></p>
-          </div>
-          <div>
-           <p style="font-size:0.73rem; color:var(--text-muted);">Tanggal Pengajuan</p>
-           <p style="font-size:0.88rem; font-weight:600; color:var(--navy);" id="trackTanggal"></p>
-          </div>
-          <div>
-           <p style="font-size:0.73rem; color:var(--text-muted);">Kecamatan</p>
-           <p style="font-size:0.88rem; font-weight:600; color:var(--navy);" id="trackKecamatan"></p>
-          </div>
-          <div>
-           <p style="font-size:0.73rem; color:var(--text-muted);">Estimasi Selesai</p>
-           <p style="font-size:0.88rem; font-weight:600; color:var(--navy);" id="trackEstimasi"></p>
-          </div>
-         </div>
-        </div>
-       </div>
-      </div>
-      <div class="tracking-card" id="trackingNotFound" style="display:none; text-align:center; padding:3rem 2rem;">
-       <div style="width:64px;height:64px;background:#fff1f2;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem; color:#be123c;"><i data-lucide="search-x" style="width:28px;height:28px;"></i>
-       </div>
-       <h4 style="color:var(--navy); margin-bottom:0.5rem;">Nomor Registrasi Tidak Ditemukan</h4>
-       <p style="color:var(--text-muted); font-size:0.85rem;">Pastikan nomor registrasi yang Anda masukkan sudah benar, atau hubungi kantor Dukcapil untuk konfirmasi.</p>
-      </div>
-     </div>
-    </div>
-   </section><!-- ═══ TENTANG KAMI ═══ -->
-   <section class="page-section" id="page-tentang">
-    <div class="section-wrap">
-     <div class="section-header"><span class="section-eyebrow">Profil Instansi</span>
-      <h2 class="section-title">Tentang Kami</h2>
-      <div class="divider-gold"></div>
-     </div>
-     <div class="about-grid">
-      <div>
-       <div class="visi-misi-card">
-        <h4><i data-lucide="eye" style="width:16px;height:16px; color:var(--gold);"></i> Visi</h4>
-        <p><em>"Mewujudkan pelayanan administrasi kependudukan yang cepat, akurat, dan terpercaya untuk seluruh masyarakat Kabupaten Kepulauan Tanimbar."</em></p>
-       </div>
-       <div class="visi-misi-card">
-        <h4><i data-lucide="target" style="width:16px;height:16px; color:var(--gold);"></i> Misi</h4>
-        <ul>
-         <li>Meningkatkan kualitas dan standar layanan administrasi kependudukan</li>
-         <li>Mendorong digitalisasi seluruh proses pelayanan sipil</li>
-         <li>Mewujudkan pelayanan proaktif yang menjangkau seluruh lapisan masyarakat</li>
-         <li>Membangun SDM pelayanan yang profesional dan berintegritas</li>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo"><span class="material-symbols-outlined">health_and_safety</span>Lahir Mati Pro Aktif</div>
+        <button class="menu-toggle" onclick="toggleMenu()"><span class="material-symbols-outlined">menu</span></button>
+        <ul class="nav-links" id="navLinks">
+            <li><a class="active" onclick="navigate('dashboard')">Dashboard</a></li>
+            <li><a onclick="navigate('prosedur')">Prosedur</a></li>
+            <li><a onclick="navigate('pengajuan')">Buat Pengajuan</a></li>
+            <li><a onclick="navigate('cek-status')">Cek Status</a></li>
+            <li><a onclick="navigate('tentang')">Tentang Kami</a></li>
+            <li><a onclick="navigate('kontak')">Kontak</a></li>
+            <li id="navAdmin" style="display:none;"><a onclick="navigate('admin')">Admin Panel</a></li>
+            <li><button class="btn-auth" id="btnAuth" onclick="showLogin()">Login</button></li>
         </ul>
-       </div>
-       <div class="visi-misi-card">
-        <h4><i data-lucide="info" style="width:16px;height:16px; color:var(--gold);"></i> Tentang Aplikasi</h4>
-        <p>Aplikasi <strong>Layanan Proaktif Lahir Mati</strong> dirancang untuk membantu tenaga kesehatan melaporkan peristiwa kelahiran dan kematian secara langsung dari fasilitas kesehatan. Dengan sistem ini, proses pencatatan sipil menjadi lebih cepat, transparan, dan terintegrasi dengan database kependudukan nasional.</p>
-       </div>
-      </div>
-      <div>
-       <div class="about-img">
-        <div style="width:52px;height:52px;background:rgba(201,162,39,0.25);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem; font-size:1.5rem;">
-         🏛️
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page-section active">
+            <h1 class="text-center">Dashboard Lahir Mati Pro Aktif</h1>
+            <p class="text-center text-muted" style="margin-bottom: 2rem;">Pusat kendali inovatif untuk memonitor layanan kependudukan secara real-time. Transparan, cepat, dan efisien.</p>
+            <div class="grid-3">
+                <div class="card glass"><div class="card-header"><div><p>Total Pengajuan</p><h3 id="statTotal">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">folder_open</span></div></div></div>
+                <div class="card glass"><div class="card-header"><div><p>Akta Kelahiran</p><h3 id="statKelahiran">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">child_care</span></div></div></div>
+                <div class="card glass"><div class="card-header"><div><p>Akta Kematian</p><h3 id="statKematian">-</h3></div><div class="card-icon"><span class="material-symbols-outlined">church</span></div></div></div>
+            </div>
+            <div class="form-grid">
+                <div class="card glass" style="grid-column: 1;"><h2>Grafik Per Jenis</h2><div class="chart-wrapper"><canvas id="chartJenis"></canvas></div></div>
+                <div class="card glass" style="grid-column: 2;"><h2>Status Progres</h2><div class="chart-wrapper"><canvas id="chartStatus"></canvas></div></div>
+            </div>
+        </section>
+
+        <!-- PROSEDUR -->
+        <section id="prosedur" class="page-section">
+            <div class="form-container glass">
+                <h1 class="text-center">Perjalanan Dokumen Anda</h1>
+                <p class="text-center" style="margin-bottom: 2rem;">Kami merancang proses pengajuan yang ringkas dan proaktif agar layanan administrasi kependudukan menjadi lebih bermakna dan mempermudah masyarakat.</p>
+                <div class="timeline">
+                    <div class="tl-item"><h4>1. Input Data</h4><p class="text-muted">Petugas kesehatan login dan mengisi formulir data kelahiran, kematian, atau lahir mati secara akurat.</p></div>
+                    <div class="tl-item"><h4>2. Upload Dokumen</h4><p class="text-muted">Unggah dokumen pendukung (KTP, KK, Surat Keterangan Dokter/Bidan) yang telah digabung dalam 1 file PDF.</p></div>
+                    <div class="tl-item"><h4>3. Verifikasi Admin</h4><p class="text-muted">Admin Disdukcapil akan memverifikasi kesesuaian data dan dokumen pendukung.</p></div>
+                    <div class="tl-item"><h4>4. Penerbitan Dokumen</h4><p class="text-muted">Jika disetujui, Akta akan diterbitkan dan status pengajuan akan berubah menjadi 'Selesai'.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FORM PENGAJUAN -->
+        <section id="pengajuan" class="page-section">
+            <div class="form-container glass">
+                <h1>Formulir Layanan Pro Aktif</h1>
+                <p class="text-muted" style="margin-bottom: 15px;">Mulai langkah kebaikan Anda di sini. Lengkapi data pemohon dengan cermat untuk memastikan penerbitan dokumen berjalan lancar tanpa hambatan.</p>
+                <div class="alert-box alert-warning"><span class="material-symbols-outlined">info</span><div>Form ini hanya dapat diisi oleh Petugas Kesehatan yang telah login.</div></div>
+                <form id="formAdminduk" onsubmit="submitForm(event)">
+                    <h3>A. Data Petugas (Otomatis)</h3>
+                    <div class="form-grid" style="margin-top: 10px; margin-bottom: 20px;">
+                        <div class="form-group"><label>Nama Petugas</label><input type="text" id="p_nama" readonly></div>
+                        <div class="form-group"><label>Email</label><input type="text" id="p_email" readonly></div>
+                        <div class="form-group"><label>No HP</label><input type="text" id="p_hp" readonly></div>
+                        <div class="form-group"><label>Kecamatan Faskes</label><input type="text" id="p_kec" readonly></div>
+                    </div>
+                    <h3>B. Data Pengajuan</h3>
+                    <div class="form-grid" style="margin-top: 10px;">
+                        <div class="form-group full"><label>Jenis Dokumen *</label><select id="f_jenis" required><option value="">-- Pilih Jenis --</option><option value="Akta Kelahiran">Akta Kelahiran</option><option value="Akta Kematian">Akta Kematian</option><option value="Lahir Mati">Lahir Mati</option></select></div>
+                        <div class="form-group full"><label>Nama Pemohon / Bayi / Jenazah *</label><input type="text" id="f_nama" required placeholder="Masukkan nama lengkap"></div>
+                        <div class="form-group"><label>Tempat Lahir *</label><input type="text" id="f_tempat_lahir" required></div>
+                        <div class="form-group"><label>Tanggal Lahir / Kematian *</label><input type="date" id="f_tanggal" required></div>
+                        <div class="form-group"><label>Jenis Kelamin *</label><select id="f_jk" required><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
+                        <div class="form-group"></div>
+                        <div class="form-group"><label>Nama Ibu Kandung *</label><input type="text" id="f_ibu" required></div>
+                        <div class="form-group"><label>Nama Ayah Kandung</label><input type="text" id="f_ayah" placeholder="Boleh dikosongkan jika tidak ada"></div>
+                        <div class="form-group"><label>Kecamatan Domisili *</label><select id="f_alamat_kec" required><option value="">-- Pilih Kecamatan --</option><option value="Tanimbar Selatan">Tanimbar Selatan</option><option value="Selaru">Selaru</option><option value="Wertamrian">Wertamrian</option><option value="Wermaktian">Wermaktian</option><option value="Tanimbar Utara">Tanimbar Utara</option><option value="Fordata">Fordata</option><option value="Wuarlabobar">Wuarlabobar</option><option value="Kormomolin">Kormomolin</option><option value="Nirunmas">Nirunmas</option><option value="Molumaru">Molumaru</option></select></div>
+                        <div class="form-group"><label>Desa/Kelurahan *</label><input type="text" id="f_alamat_desa" required></div>
+                        <div class="form-group full"><label>RT / RW *</label><input type="text" id="f_rtrw" required placeholder="Contoh: 001 / 002"></div>
+                    </div>
+                    <h3 style="margin-top: 20px;">C. Upload Dokumen</h3>
+                    <div class="form-group full">
+                        <label>Dokumen Pendukung (Jadikan 1 file PDF) *</label>
+                        <div class="file-upload-wrapper" onclick="document.getElementById('f_file').click()">
+                            <span class="material-symbols-outlined" style="font-size: 3rem; color: var(--primary);">upload_file</span>
+                            <p id="file-label">Klik untuk memilih file PDF (Max 2MB)</p>
+                            <input type="file" id="f_file" accept=".pdf" required onchange="handleFile(this)">
+                        </div>
+                        <span class="file-info">"Pastikan dokumen adalah foto asli (berwarna), bukan hasil fotokopi."</span>
+                    </div>
+                    <div class="form-group full checkbox-wrapper"><input type="checkbox" id="f_snk" required><label for="f_snk">Saya menyatakan bahwa data dan dokumen yang diinput adalah benar dan sah.</label></div>
+                    <button type="submit" class="btn-submit" id="btnSubmitForm"><span class="material-symbols-outlined">send</span> Kirim Pengajuan</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- CEK STATUS -->
+        <section id="cek-status" class="page-section">
+            <div class="form-container glass">
+                <h1 class="text-center">Lacak Dokumen Anda</h1>
+                <p class="text-center" style="margin-bottom: 2rem;">Pantau setiap tahapan proses dokumen secara mudah dengan memasukkan Nomor Pengajuan (REQ) atau Nama Pemohon.</p>
+                <div class="search-bar-wrapper">
+                    <input type="text" id="searchQuery" placeholder="Cari ID / Nama..." style="flex: 1;">
+                    <button class="btn-submit" style="width: auto;" onclick="cariStatus()">Cari</button>
+                </div>
+                <div id="hasilPencarian"></div>
+            </div>
+        </section>
+
+        <!-- TENTANG KAMI -->
+        <section id="tentang" class="page-section">
+            <div class="form-container glass">
+                <h1>Mengenal Lahir Mati Pro Aktif</h1>
+                <p>Lebih dari sekadar aplikasi, <strong>Lahir Mati Pro Aktif</strong> adalah wujud nyata kepedulian kami menghadirkan layanan administrasi kependudukan yang menyentuh langsung denyut nadi masyarakat di fasilitas kesehatan. Kami percaya bahwa setiap siklus kehidupan berharga dan berhak dicatat dengan mudah.</p>
+                <h3 style="margin-top: 20px;">Visi Kami</h3><p>Mewujudkan kepastian hukum dan kebahagiaan masyarakat melalui pencatatan sipil yang responsif, proaktif, dan terintegrasi penuh.</p>
+                <h3 style="margin-top: 20px;">Misi Kami</h3>
+                <ul style="margin-left: 20px;">
+                    <li>Menjemput bola dengan sistem pelaporan langsung dari titik pelayanan kesehatan.</li>
+                    <li>Membangun ekosistem data yang akurat, aman, dan dapat diandalkan.</li>
+                    <li>Menghapus birokrasi berbelit dengan inovasi digital yang ramah pengguna.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- KONTAK -->
+        <section id="kontak" class="page-section">
+            <div class="form-container glass">
+                <h1>Kami Siap Mendengar</h1>
+                <p class="text-muted" style="margin-bottom: 20px;">Ada pertanyaan, masukan, atau butuh panduan teknis? Tim Lahir Mati Pro Aktif selalu antusias mendampingi Anda.</p>
+                <div class="contact-grid">
+                    <div>
+                        <div class="form-group"><label>Nama</label><input type="text" placeholder="Nama Anda"></div>
+                        <div class="form-group"><label>Pesan</label><textarea rows="4" placeholder="Tulis pesan..."></textarea></div>
+                        <button class="btn-submit">Kirim Pesan</button>
+                    </div>
+                    <div>
+                        <h4>Info Kontak</h4>
+                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">location_on</span> Jl. Kependudukan No. 1, Tanimbar</p>
+                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">email</span> info@adminduk.go.id</p>
+                        <p><span class="material-symbols-outlined" style="vertical-align: middle;">call</span> 0811-2233-4455</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN PANEL -->
+        <section id="admin" class="page-section">
+            <div class="glass" style="padding: 2rem;">
+                <h1>Panel Administrasi</h1>
+                <div class="alert-box alert-info"><span class="material-symbols-outlined">admin_panel_settings</span><div>Halaman khusus verifikasi pengajuan dokumen.</div></div>
+                <button class="btn-submit" style="width: auto; margin-bottom: 15px;" onclick="loadDataAdmin()"><span class="material-symbols-outlined">refresh</span> Refresh Data</button>
+                <div class="table-responsive">
+                    <table>
+                        <thead><tr><th>ID Pengajuan</th><th>Tgl</th><th>Petugas</th><th>Jenis Dokumen</th><th>Nama Pemohon</th><th>Dokumen</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="tableBodyAdmin"><tr><td colspan="8" class="text-center">Klik Refresh Data untuk memuat...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>@2025 Dinas Kependudukan dan Pencatatan Sipil Kabupaten Kepulauan Tanimbar</footer>
+
+    <!-- Global Loader & Toast -->
+    <div id="loader"><div class="spinner"></div><p style="margin-top: 15px; font-weight: 500; color: var(--primary);">Memproses...</p></div>
+    <div id="toast"><span class="material-symbols-outlined" id="toastIcon">info</span><span id="toastMsg">Pesan di sini</span></div>
+
+    <!-- Modals -->
+    <div id="loginModal">
+        <div class="login-box glass">
+            <h2>Masuk Akses Pro Aktif</h2>
+            <p class="text-muted" style="margin-bottom: 20px;">Masukkan username dan password Anda</p>
+            <input type="text" id="loginUsername" placeholder="Username" style="width:100%; margin-bottom: 15px;">
+            <input type="password" id="loginPassword" placeholder="Password" style="width:100%; margin-bottom: 15px;">
+            <button class="btn-submit" onclick="doLogin()">Masuk Akses</button>
+            <span class="link-text" onclick="showRegister()">Belum punya akun? Daftar Petugas di sini</span>
+            <button class="btn-submit" style="background: transparent; color: var(--text-muted); margin-top: 10px;" onclick="document.getElementById('loginModal').style.display='none'">Batal</button>
         </div>
-        <h3>Dinas Kependudukan dan Pencatatan Sipil</h3>
-        <p>Kabupaten Kepulauan Tanimbar adalah kabupaten di provinsi Maluku yang berkomitmen mewujudkan pelayanan kependudukan digital yang inklusif dan proaktif.</p>
-        <div class="about-stat">
-         <div class="about-stat-icon">
-          <i data-lucide="map-pin" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <strong>10 Kecamatan</strong>
-          <p>Wilayah pelayanan aktif</p>
-         </div>
-        </div>
-        <div class="about-stat">
-         <div class="about-stat-icon">
-          <i data-lucide="users" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <strong>± 110.000 Jiwa</strong>
-          <p>Penduduk terdaftar</p>
-         </div>
-        </div>
-        <div class="about-stat">
-         <div class="about-stat-icon">
-          <i data-lucide="clock" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <strong>1–3 Hari Kerja</strong>
-          <p>Estimasi proses layanan</p>
-         </div>
-        </div>
-       </div>
-      </div>
-     </div>
     </div>
-   </section><!-- ═══ KONTAK ═══ -->
-   <section class="page-section" id="page-kontak">
-    <div class="section-wrap">
-     <div class="section-header"><span class="section-eyebrow">Hubungi Kami</span>
-      <h2 class="section-title">Kontak &amp; Informasi</h2>
-      <p class="section-desc">Jangan ragu untuk menghubungi kami apabila Anda membutuhkan bantuan atau informasi lebih lanjut.</p>
-      <div class="divider-gold"></div>
-     </div>
-     <div class="kontak-grid">
-      <div>
-       <div class="kontak-info-card">
-        <h4 style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--gold); margin-bottom:0.5rem;">Informasi Kontak</h4>
-        <div class="kontak-item">
-         <div class="kontak-item-icon">
-          <i data-lucide="map-pin" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <h5>Alamat Kantor</h5>
-          <p id="officeAddressEl">Jl. Ir. Soekarno No. 01, Saumlaki,<br>
-           Kab. Kepulauan Tanimbar, Maluku 97662</p>
-         </div>
+
+    <div id="registerModal">
+        <div class="login-box glass" style="max-width: 500px; text-align: left;">
+            <h2 class="text-center">Daftar Akun Petugas</h2>
+            <p class="text-center text-muted" style="margin-bottom: 20px;">Bergabunglah bersama Lahir Mati Pro Aktif</p>
+            <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regNama"></div>
+            <div class="form-group"><label>Username</label><input type="text" id="regUsername"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="regPassword"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="regEmail"></div>
+            <div class="form-group"><label>No HP / WhatsApp</label><input type="text" id="regHp"></div>
+            <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-group"><label>Kecamatan Faskes</label><input type="text" id="regKec"></div>
+                <div class="form-group"><label>Desa/Kelurahan</label><input type="text" id="regDesa"></div>
+            </div>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Upload Foto Profil (JPG/PNG)</label>
+                <input type="file" id="regFoto" accept="image/*" onchange="handleFotoUpload(this)">
+                <small id="regFotoName" style="color: var(--primary); display:block; margin-top:5px;"></small>
+            </div>
+            <button class="btn-submit" style="margin-top: 15px;" id="btnSubmitReg" onclick="doRegister()">Daftarkan Akun</button>
+            <button class="btn-submit" style="background: transparent; color: var(--text-muted); margin-top: 5px; width: 100%;" onclick="document.getElementById('registerModal').style.display='none'">Batal</button>
         </div>
-        <div class="kontak-item">
-         <div class="kontak-item-icon">
-          <i data-lucide="phone" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <h5>Telepon / WhatsApp</h5>
-          <p id="officePhoneEl">+62 812-4567-8901</p>
-         </div>
-        </div>
-        <div class="kontak-item">
-         <div class="kontak-item-icon">
-          <i data-lucide="mail" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <h5>Email Resmi</h5>
-          <p id="officeEmailEl">dukcapil@tanimbar.go.id</p>
-         </div>
-        </div>
-        <div class="kontak-item">
-         <div class="kontak-item-icon">
-          <i data-lucide="clock" style="width:18px;height:18px;"></i>
-         </div>
-         <div>
-          <h5>Jam Operasional</h5>
-          <p>Senin – Jumat: 08.00 – 16.00 WIT<br>
-           Sabtu &amp; Minggu: Tutup</p>
-         </div>
-        </div>
-       </div>
-      </div>
-      <div>
-       <div class="kontak-form-card">
-        <h4 style="font-weight:700; color:var(--navy); font-size:1rem; margin-bottom:1.25rem;">Kirim Pesan</h4>
-        <form onsubmit="submitKontak(event)">
-         <div class="form-group" style="margin-bottom:1rem;"><label class="form-label" for="kontak-nama">Nama Lengkap <span class="req">*</span></label> <input class="form-input" id="kontak-nama" type="text" placeholder="Nama Anda" required>
-         </div>
-         <div class="form-group" style="margin-bottom:1rem;"><label class="form-label" for="kontak-email">Email <span class="req">*</span></label> <input class="form-input" id="kontak-email" type="email" placeholder="email@example.com" required>
-         </div>
-         <div class="form-group" style="margin-bottom:1.25rem;"><label class="form-label" for="kontak-pesan">Pesan <span class="req">*</span></label> <textarea class="form-textarea" id="kontak-pesan" placeholder="Tulis pesan Anda di sini..." required></textarea>
-         </div><button type="submit" class="btn-submit" style="width:100%;"> <i data-lucide="send" style="width:15px;height:15px; display:inline; vertical-align:middle; margin-right:0.4rem;"></i> Kirim Pesan </button>
-         <div id="kontak-success" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:9px; padding:0.9rem; margin-top:1rem; text-align:center; font-size:0.85rem; color:#15803d; font-weight:600;">
-          ✅ Pesan berhasil dikirim! Kami akan menghubungi Anda segera.
-         </div>
-        </form>
-       </div>
-      </div>
-     </div>
     </div>
-   </section><!-- ═══ FOOTER ═══ -->
-   <footer class="footer">
-    <p>© 2024 <strong>Dinas Kependudukan dan Pencatatan Sipil</strong> — Kabupaten Kepulauan Tanimbar</p>
-    <p style="margin-top:0.3rem;">Layanan Proaktif Lahir Mati | Sistem Informasi Kependudukan Digital</p>
-   </footer>
-  </div>
-  <script>
-    // ── State ──
-    const formSteps = {
-      kelahiran: 1,
-      mati: 1,
-      lahirmati: 1
-    };
 
-    // ── Navigation ──
-    function showPage(pageId) {
-      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      const pg = document.getElementById('page-' + pageId);
-      if (pg) pg.classList.add('active');
-      const navMap = { beranda: 0, layanan: 1, prosedur: 2, tracking: 3, tentang: 4, kontak: 5 };
-      const navLinks = document.querySelectorAll('.nav-links .nav-link');
-      if (navMap[pageId] !== undefined && navLinks[navMap[pageId]]) {
-        navLinks[navMap[pageId]].classList.add('active');
-      }
-      window.scrollTo(0, 0);
-    }
+    <script>
+        // ==========================================
+        // KONFIGURASI PENTING (API URL)
+        // ==========================================
+        // Ganti URL ini dengan URL Web App hasil Deploy Google Apps Script Anda!
+        const API_URL = "https://script.google.com/macros/s/AKfycbwwhG3KGIlmnMim4WHKRSLy5BDIUBsdEld-0ZHR7Hoy41ibjsWOvGisQ4mNcC6t2f5Ftw/exec";
 
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      menu.classList.toggle('open');
-    }
-    function closeMobileMenu() {
-      document.getElementById('mobileMenu').classList.remove('open');
-    }
-
-    function openServiceForm(type) {
-      showPage('layanan');
-      switchTab(type);
-    }
-
-    function switchTab(type) {
-      document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.service-form').forEach(f => f.classList.remove('active'));
-      const tab = document.getElementById('tab-' + type);
-      const form = document.getElementById('form-' + type);
-      if (tab) tab.classList.add('active');
-      if (form) form.classList.add('active');
-    }
-
-    // ── Multi-step ──
-    function updateStepUI(prefix, step) {
-      const prefixMap = { kelahiran: 'k', mati: 'm', lahirmati: 'lm' };
-      const p = prefixMap[prefix];
-
-      [1, 2, 3].forEach(i => {
-        const dot = document.getElementById(p + '-dot-' + i);
-        if (!dot) return;
-        dot.className = 'step-dot ' + (i < step ? 'done' : i === step ? 'active' : 'pending');
-        if (i < step) dot.innerHTML = '<i data-lucide="check" style="width:14px;height:14px;"></i>';
-        else dot.textContent = i;
-
-        const stepEl = document.getElementById(p + '-step-' + i);
-        if (stepEl) stepEl.style.display = i === step ? 'block' : 'none';
-
-        if (i < 3) {
-          const line = document.getElementById(p + '-line-' + i);
-          if (line) line.className = 'step-line ' + (i < step ? 'done-line' : '');
-        }
-      });
-
-      const indicator = document.getElementById(p + '-step-indicator');
-      if (indicator) indicator.textContent = 'Langkah ' + step + ' dari 3';
-
-      const prevBtn = document.getElementById(p + '-btn-prev');
-      const nextBtn = document.getElementById(p + '-btn-next');
-      if (prevBtn) prevBtn.style.visibility = step > 1 ? 'visible' : 'hidden';
-      if (nextBtn) {
-        if (step === 3) {
-          nextBtn.textContent = '';
-          nextBtn.className = 'btn-submit';
-          nextBtn.innerHTML = '✅ Kirim Pengajuan';
-        } else {
-          nextBtn.className = 'btn-next';
-          nextBtn.textContent = 'Selanjutnya →';
-        }
-      }
-      lucide.createIcons();
-    }
-
-    function stepNav(prefix, dir) {
-      const step = formSteps[prefix];
-      if (dir === 'next') {
-        if (step === 3) {
-          submitForm(prefix);
-          return;
-        }
-        formSteps[prefix] = step + 1;
-      } else {
-        formSteps[prefix] = Math.max(1, step - 1);
-      }
-      updateStepUI(prefix, formSteps[prefix]);
-    }
-
-    // ── Submit ──
-    function generateRegNum(type) {
-      const typeMap = { kelahiran: 'KLH', mati: 'KMT', lahirmati: 'LMT' };
-      const code = typeMap[type] || 'GEN';
-      const num = String(Math.floor(Math.random() * 9000) + 1000);
-      const year = new Date().getFullYear();
-      return 'REG-' + code + '-' + year + '-' + num;
-    }
-
-    function submitForm(prefix) {
-      const regNum = generateRegNum(prefix);
-      showToast(regNum);
-      // Reset steps
-      formSteps[prefix] = 1;
-      updateStepUI(prefix, 1);
-    }
-
-    function showToast(regNum) {
-      const toast = document.getElementById('toastSuccess');
-      document.getElementById('toastRegNum').textContent = 'No. Registrasi: ' + regNum;
-      toast.classList.add('show');
-      lucide.createIcons();
-      setTimeout(() => toast.classList.remove('show'), 6000);
-    }
-
-    // ── File Upload ──
-    function handleFileUpload(input, displayId) {
-      const nameEl = document.getElementById(displayId);
-      if (input.files && input.files[0]) {
-        nameEl.textContent = '✓ ' + input.files[0].name;
-      }
-    }
-
-    // ── Tracking ──
-    const trackingDB = {
-      'REG-KLH-2024-0001': { status: 'disetujui', jenis: '👶 Pengajuan Kelahiran', kecamatan: 'Saumlaki', tanggal: '12 Nov 2024', estimasi: '15 Nov 2024', progress: 4 },
-      'REG-KMT-2024-0012': { status: 'diverifikasi', jenis: '⚰️ Pengajuan Kematian', kecamatan: 'Tanimbar Selatan', tanggal: '10 Nov 2024', estimasi: '14 Nov 2024', progress: 3 },
-      'REG-LMT-2024-0005': { status: 'diproses', jenis: '📄 Lahir Mati', kecamatan: 'Selaru', tanggal: '13 Nov 2024', estimasi: '17 Nov 2024', progress: 2 },
-    };
-
-    function doTracking() {
-      const val = document.getElementById('trackingInput').value.trim().toUpperCase();
-      const resultEl = document.getElementById('trackingResult');
-      const notFoundEl = document.getElementById('trackingNotFound');
-
-      resultEl.classList.remove('show');
-      notFoundEl.style.display = 'none';
-
-      const data = trackingDB[val];
-      if (!data) {
-        notFoundEl.style.display = 'block';
-        return;
-      }
-
-      document.getElementById('trackRegNum').textContent = val;
-      document.getElementById('trackJenis').textContent = data.jenis;
-      document.getElementById('trackTanggal').textContent = data.tanggal;
-      document.getElementById('trackKecamatan').textContent = data.kecamatan;
-      document.getElementById('trackEstimasi').textContent = data.estimasi;
-
-      const statusBadgeEl = document.getElementById('trackStatusBadge');
-      const statusMap = {
-        diproses: { cls: 'status-diproses', label: '🔄 Sedang Diproses' },
-        diverifikasi: { cls: 'status-diverifikasi', label: '🔍 Sedang Diverifikasi' },
-        disetujui: { cls: 'status-disetujui', label: '✅ Disetujui' },
-        ditolak: { cls: 'status-ditolak', label: '❌ Ditolak' },
-      };
-      const s = statusMap[data.status] || statusMap.diproses;
-      statusBadgeEl.innerHTML = `<span class="status-badge ${s.cls}">${s.label}</span>`;
-
-      // Update progress dots
-      const dots = ['prog-dot-2', 'prog-dot-3', 'prog-dot-4'];
-      const steps = ['prog-diproses', 'prog-diverifikasi', 'prog-disetujui'];
-      dots.forEach((id, i) => {
-        const dot = document.getElementById(id);
-        const stepEl = document.getElementById(steps[i]);
-        if (i + 2 < data.progress) {
-          dot.className = 'prog-dot done';
-          dot.innerHTML = '<i data-lucide="check" style="width:12px;height:12px;"></i>';
-          stepEl.className = 'prog-step done';
-        } else if (i + 2 === data.progress) {
-          dot.className = 'prog-dot current';
-          dot.textContent = i + 2;
-          stepEl.className = 'prog-step';
-        } else {
-          dot.className = 'prog-dot inactive';
-          dot.textContent = i + 2;
-          stepEl.className = 'prog-step';
-        }
-      });
-
-      resultEl.classList.add('show');
-      lucide.createIcons();
-    }
-
-    // ── Contact Form ──
-    function submitKontak(e) {
-      e.preventDefault();
-      document.getElementById('kontak-success').style.display = 'block';
-      e.target.querySelector('button[type=submit]').disabled = true;
-      setTimeout(() => {
-        document.getElementById('kontak-success').style.display = 'none';
-        e.target.reset();
-        e.target.querySelector('button[type=submit]').disabled = false;
-      }, 4000);
-    }
-
-    // ── SDK Init ──
-    const defaultConfig = {
-      app_title: 'DUKCAPIL KKT',
-      hero_title: 'Layanan Proaktif Lahir dan Mati',
-      hero_subtitle: 'Mempermudah pelaporan peristiwa kependudukan secara cepat, mudah, dan akurat untuk seluruh masyarakat Kabupaten Kepulauan Tanimbar.',
-      office_address: 'Jl. Ir. Soekarno No. 01, Saumlaki,\nKab. Kepulauan Tanimbar, Maluku 97662',
-      office_phone: '+62 812-4567-8901',
-      office_email: 'dukcapil@tanimbar.go.id',
-      background_color: '#0f2d5e',
-      surface_color: '#ffffff',
-      text_color: '#0f2d5e',
-      accent_color: '#c9a227',
-      font_family: 'Plus Jakarta Sans',
-      font_size: 15,
-    };
-
-    window.elementSdk.init({
-      defaultConfig,
-      onConfigChange: async (config) => {
-        const appTitle = config.app_title || defaultConfig.app_title;
-        const heroTitle = config.hero_title || defaultConfig.hero_title;
-        const heroSub = config.hero_subtitle || defaultConfig.hero_subtitle;
-        const addr = config.office_address || defaultConfig.office_address;
-        const phone = config.office_phone || defaultConfig.office_phone;
-        const email = config.office_email || defaultConfig.office_email;
-
-        const appNameEl = document.getElementById('appNameDisplay');
-        if (appNameEl) appNameEl.textContent = appTitle;
-
-        const heroTitleEl = document.getElementById('heroTitleEl');
-        if (heroTitleEl) {
-          // Keep the span highlight on second part
-          const parts = heroTitle.split(' ');
-          const half = Math.floor(parts.length / 2);
-          const first = parts.slice(0, half).join(' ');
-          const second = parts.slice(half).join(' ');
-          heroTitleEl.innerHTML = first + ' <span>' + second + '</span>';
+        // --- FUNGSI KOMUNIKASI API FETCH ---
+        async function apiCall(action, data = {}) {
+            if(API_URL.includes("ISI_DENGAN_URL")) {
+                alert("PENTING: Harap ubah variabel API_URL di dalam file index.html dengan link Google Script Anda.");
+                throw new Error("URL API belum dikonfigurasi.");
+            }
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // text/plain digunakan agar tidak terhalang kebijakan CORS di browser
+                    body: JSON.stringify({ action: action, data: data })
+                });
+                return await response.json();
+            } catch (e) {
+                console.error("Fetch Error:", e);
+                throw new Error("Gagal terhubung ke Server Database Spreadsheet.");
+            }
         }
 
-        const heroSubEl = document.getElementById('heroSubtitleEl');
-        if (heroSubEl) heroSubEl.textContent = heroSub;
+        // --- STATE MANAGEMENT ---
+        let currentUser = null;
+        let fileBase64Data = null;
+        let fotoBase64Data = null;
+        let fotoFileName = null;
+        let chartJenisInstance = null;
+        let chartStatusInstance = null;
 
-        const addrEl = document.getElementById('officeAddressEl');
-        if (addrEl) addrEl.innerHTML = addr.replace(/\n/g, '<br/>');
+        // --- NAVIGATION ---
+        function navigate(sectionId) {
+            if (sectionId === 'admin') {
+                if (!currentUser) { showToast('Silakan masuk terlebih dahulu!', 'error'); showLogin(); return; }
+                if (currentUser.role !== 'admin') { showToast('Akses Ditolak! Khusus Administrator.', 'error'); return; }
+            }
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            if(event && event.target) event.target.classList.add('active');
+            document.getElementById('navLinks').classList.remove('active');
 
-        const phoneEl = document.getElementById('officePhoneEl');
-        if (phoneEl) phoneEl.textContent = phone;
-
-        const emailEl = document.getElementById('officeEmailEl');
-        if (emailEl) emailEl.textContent = email;
-
-        // Colors
-        const bg = config.background_color || defaultConfig.background_color;
-        const surface = config.surface_color || defaultConfig.surface_color;
-        const textCol = config.text_color || defaultConfig.text_color;
-        const accent = config.accent_color || defaultConfig.accent_color;
-
-        document.documentElement.style.setProperty('--navy', bg);
-        document.documentElement.style.setProperty('--navy-mid', adjustBrightness(bg, 20));
-        document.documentElement.style.setProperty('--navy-light', adjustBrightness(bg, 40));
-        document.documentElement.style.setProperty('--white', surface);
-        document.documentElement.style.setProperty('--text-dark', textCol);
-        document.documentElement.style.setProperty('--gold', accent);
-        document.documentElement.style.setProperty('--gold-light', adjustBrightness(accent, 20));
-
-        // Font
-        const ff = config.font_family || defaultConfig.font_family;
-        const fs = config.font_size || defaultConfig.font_size;
-        document.body.style.fontFamily = `'${ff}', 'Plus Jakarta Sans', sans-serif`;
-        document.body.style.fontSize = fs + 'px';
-      },
-      mapToCapabilities: (config) => ({
-        recolorables: [
-          {
-            get: () => config.background_color || defaultConfig.background_color,
-            set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }
-          },
-          {
-            get: () => config.surface_color || defaultConfig.surface_color,
-            set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }
-          },
-          {
-            get: () => config.text_color || defaultConfig.text_color,
-            set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }
-          },
-          {
-            get: () => config.accent_color || defaultConfig.accent_color,
-            set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); }
-          },
-        ],
-        borderables: [],
-        fontEditable: {
-          get: () => config.font_family || defaultConfig.font_family,
-          set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
-        },
-        fontSizeable: {
-          get: () => config.font_size || defaultConfig.font_size,
-          set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+            if(sectionId === 'dashboard') loadDashboard();
+            if(sectionId === 'pengajuan') checkLoginForForm();
         }
-      }),
-      mapToEditPanelValues: (config) => new Map([
-        ['app_title', config.app_title || defaultConfig.app_title],
-        ['hero_title', config.hero_title || defaultConfig.hero_title],
-        ['hero_subtitle', config.hero_subtitle || defaultConfig.hero_subtitle],
-        ['office_address', config.office_address || defaultConfig.office_address],
-        ['office_phone', config.office_phone || defaultConfig.office_phone],
-        ['office_email', config.office_email || defaultConfig.office_email],
-      ])
-    });
 
-    // Helper: lighten hex
-    function adjustBrightness(hex, amount) {
-      let r = parseInt(hex.slice(1,3), 16);
-      let g = parseInt(hex.slice(3,5), 16);
-      let b = parseInt(hex.slice(5,7), 16);
-      r = Math.min(255, r + amount);
-      g = Math.min(255, g + amount);
-      b = Math.min(255, b + amount);
-      return '#' + [r,g,b].map(x => x.toString(16).padStart(2,'0')).join('');
-    }
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('active'); }
+        function showLoader(show) { document.getElementById('loader').style.display = show ? 'flex' : 'none'; }
+        function showToast(msg, type='info') {
+            const toast = document.getElementById('toast');
+            toast.className = ''; toast.classList.add('show', type);
+            document.getElementById('toastIcon').innerText = type === 'success' ? 'check_circle' : (type === 'error' ? 'error' : 'info');
+            document.getElementById('toastMsg').innerText = msg;
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
 
-    // ── Init ──
-    lucide.createIcons();
-    updateStepUI('kelahiran', 1);
-    updateStepUI('mati', 1);
-    updateStepUI('lahirmati', 1);
-  </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9de2c234e6f43de7',t:'MTc3MzgyMTQwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+        // --- AUTH ---
+        function showLogin() {
+            if(currentUser) {
+                currentUser = null; localStorage.removeItem('adminduk_user');
+                updateUIAuth(); showToast('Berhasil logout', 'success'); navigate('dashboard');
+            } else {
+                document.getElementById('loginModal').style.display = 'flex';
+                document.getElementById('registerModal').style.display = 'none';
+            }
+        }
+
+        function showRegister() {
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('registerModal').style.display = 'flex';
+        }
+
+        function handleFotoUpload(input) {
+            const file = input.files[0]; if(!file) return;
+            document.getElementById('regFotoName').innerText = file.name;
+            fotoFileName = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) { fotoBase64Data = e.target.result.split(',')[1]; };
+            reader.readAsDataURL(file);
+        }
+
+        async function doRegister() {
+            const formData = {
+                nama: document.getElementById('regNama').value, username: document.getElementById('regUsername').value,
+                pass: document.getElementById('regPassword').value, email: document.getElementById('regEmail').value,
+                hp: document.getElementById('regHp').value, kec: document.getElementById('regKec').value,
+                desa: document.getElementById('regDesa').value, fotoBase64: fotoBase64Data, fotoName: fotoFileName
+            };
+
+            if(!formData.nama || !formData.username || !formData.pass || !fotoBase64Data) {
+                return showToast('Mohon lengkapi semua data dan upload foto!', 'error');
+            }
+
+            showLoader(true); document.getElementById('btnSubmitReg').disabled = true;
+            try {
+                const res = await apiCall('register', formData);
+                showLoader(false); document.getElementById('btnSubmitReg').disabled = false;
+                if(res.status === 'success') {
+                    showToast('Registrasi berhasil! Silakan login.', 'success');
+                    document.getElementById('registerModal').style.display = 'none'; showLogin();
+                } else { showToast(res.message, 'error'); }
+            } catch(err) {
+                showLoader(false); document.getElementById('btnSubmitReg').disabled = false;
+                showToast(err.message, 'error');
+            }
+        }
+
+        async function doLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const pass = document.getElementById('loginPassword').value;
+            if(!username || !pass) return showToast('Username dan Password harus diisi!', 'error');
+
+            showLoader(true); document.getElementById('loginModal').style.display = 'none';
+            try {
+                const res = await apiCall('login', { username: username, password: pass });
+                showLoader(false);
+                if(res.status === 'success') {
+                    currentUser = res.user; localStorage.setItem('adminduk_user', JSON.stringify(currentUser));
+                    updateUIAuth(); showToast(`Selamat datang, ${currentUser.nama}`, 'success');
+                } else {
+                    showToast(res.message, 'error'); document.getElementById('loginModal').style.display = 'flex';
+                }
+            } catch(err) {
+                showLoader(false); showToast(err.message, 'error'); document.getElementById('loginModal').style.display = 'flex';
+            }
+        }
+
+        function updateUIAuth() {
+            const btnAuth = document.getElementById('btnAuth'), navAdmin = document.getElementById('navAdmin');
+            if(currentUser) {
+                btnAuth.innerText = 'Logout'; btnAuth.style.background = '#ef4444';
+                navAdmin.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+                document.getElementById('p_nama').value = currentUser.nama; document.getElementById('p_email').value = currentUser.email;
+                document.getElementById('p_hp').value = currentUser.no_hp; document.getElementById('p_kec').value = currentUser.kecamatan;
+            } else {
+                btnAuth.innerText = 'Login'; btnAuth.style.background = 'var(--primary)'; navAdmin.style.display = 'none';
+                document.getElementById('p_nama').value = ''; document.getElementById('p_email').value = '';
+                document.getElementById('p_hp').value = ''; document.getElementById('p_kec').value = '';
+            }
+        }
+
+        function checkLoginForForm() { if(!currentUser) { showToast('Anda harus login sebagai petugas!', 'error'); navigate('dashboard'); showLogin(); } }
+
+        // --- DASHBOARD ---
+        async function loadDashboard() {
+            try {
+                const stats = await apiCall('getStats');
+                if(stats.status === 'error') return;
+                document.getElementById('statTotal').innerText = stats.total;
+                document.getElementById('statKelahiran').innerText = stats.kelahiran;
+                document.getElementById('statKematian').innerText = stats.kematian;
+                renderCharts(stats);
+            } catch(e) { console.log(e); }
+        }
+
+        function renderCharts(data) {
+            const ctxJenis = document.getElementById('chartJenis').getContext('2d');
+            if(chartJenisInstance) chartJenisInstance.destroy();
+            chartJenisInstance = new Chart(ctxJenis, { type: 'doughnut', data: { labels: ['Akta Kelahiran', 'Akta Kematian', 'Lahir Mati'], datasets: [{ data: [data.kelahiran, data.kematian, data.lahir_mati], backgroundColor: ['#3B82F6', '#EF4444', '#10B981'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+
+            const ctxStatus = document.getElementById('chartStatus').getContext('2d');
+            if(chartStatusInstance) chartStatusInstance.destroy();
+            chartStatusInstance = new Chart(ctxStatus, { type: 'bar', data: { labels: ['Menunggu', 'Diproses', 'Selesai'], datasets: [{ label: 'Jumlah Pengajuan', data: [data.menunggu, data.diproses, data.selesai], backgroundColor: ['#F59E0B', '#3B82F6', '#10B981'], borderRadius: 5 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }, plugins: { legend: { display: false } } } });
+        }
+
+        // --- FORMS ---
+        function handleFile(input) {
+            const file = input.files[0], label = document.getElementById('file-label');
+            if(!file) return;
+            if(file.type !== "application/pdf") { showToast("File harus format PDF!", "error"); input.value = ""; label.innerText = "Klik untuk memilih file PDF (Max 2MB)"; return; }
+            if(file.size > 2 * 1024 * 1024) { showToast("Ukuran maksimal 2MB!", "error"); input.value = ""; label.innerText = "Klik untuk memilih file PDF (Max 2MB)"; return; }
+            label.innerText = file.name;
+            const reader = new FileReader(); reader.onload = function(e) { fileBase64Data = e.target.result.split(',')[1]; }; reader.readAsDataURL(file);
+        }
+
+        async function submitForm(e) {
+            e.preventDefault();
+            if(!currentUser) return showToast("Sesi habis, silakan login ulang.", "error");
+            if(!fileBase64Data) return showToast("File PDF belum siap / diproses.", "error");
+
+            const formData = {
+                nama_petugas: currentUser.nama, no_hp: currentUser.no_hp, email: currentUser.email, kecamatan: currentUser.kecamatan, desa: currentUser.desa,
+                jenis_dokumen: document.getElementById('f_jenis').value, nama_pemohon: document.getElementById('f_nama').value,
+                tempat_lahir: document.getElementById('f_tempat_lahir').value, tanggal_lahir: document.getElementById('f_tanggal').value,
+                jenis_kelamin: document.getElementById('f_jk').value, nama_ibu: document.getElementById('f_ibu').value,
+                nama_ayah: document.getElementById('f_ayah').value, alamat_kecamatan: document.getElementById('f_alamat_kec').value,
+                alamat_desa: document.getElementById('f_alamat_desa').value, rt_rw: document.getElementById('f_rtrw').value,
+                fileBase64: fileBase64Data, fileName: `Berkas_${document.getElementById('f_nama').value}.pdf`
+            };
+
+            showLoader(true); document.getElementById('btnSubmitForm').disabled = true;
+            try {
+                const res = await apiCall('simpanPengajuan', formData);
+                showLoader(false); document.getElementById('btnSubmitForm').disabled = false;
+                if(res.status === 'success') {
+                    showToast("Pengajuan berhasil! ID: " + res.id, "success");
+                    document.getElementById('formAdminduk').reset(); document.getElementById('file-label').innerText = "Klik untuk memilih file PDF (Max 2MB)"; fileBase64Data = null;
+                    updateUIAuth();
+                    setTimeout(() => { navigate('cek-status'); document.getElementById('searchQuery').value = res.id; cariStatus(); }, 2000);
+                } else { showToast(res.message, "error"); }
+            } catch(err) {
+                showLoader(false); document.getElementById('btnSubmitForm').disabled = false; showToast(err.message, "error");
+            }
+        }
+
+        // --- STATUS & ADMIN ---
+        async function cariStatus() {
+            const q = document.getElementById('searchQuery').value;
+            if(!q) return showToast("Masukkan ID atau Nama", "error");
+            document.getElementById('hasilPencarian').innerHTML = `<p class="text-center">Mencari...</p>`;
+            
+            try {
+                const res = await apiCall('cekStatus', { query: q });
+                let html = '';
+                if(res.data.length === 0) { html = `<div class="alert-box alert-warning">Tidak ditemukan pengajuan dengan kata kunci tersebut.</div>`; } 
+                else {
+                    res.data.forEach(item => {
+                        let badgeClass = item.status.toLowerCase();
+                        html += `<div class="card glass result-card"><div><h4 style="margin:0; color:var(--primary);">${item.id}</h4><p style="margin:5px 0; font-weight:bold;">${item.nama} - ${item.jenis}</p><p style="font-size:0.85rem;" class="text-muted">Tanggal: ${item.tanggal}</p></div><div><span class="badge ${badgeClass}">${item.status}</span></div></div>`;
+                    });
+                }
+                document.getElementById('hasilPencarian').innerHTML = html;
+            } catch(e) { showToast(e.message, "error"); document.getElementById('hasilPencarian').innerHTML = ''; }
+        }
+
+        async function loadDataAdmin() {
+            if(!currentUser || currentUser.role !== 'admin') return;
+            showLoader(true);
+            try {
+                const res = await apiCall('getAllAdmin');
+                showLoader(false);
+                let tbody = document.getElementById('tableBodyAdmin');
+                if(res.data.length === 0) { tbody.innerHTML = `<tr><td colspan="8" class="text-center">Belum ada data pengajuan.</td></tr>`; return; }
+                let rows = '';
+                res.data.forEach(item => {
+                    let badgeClass = item.status.toLowerCase();
+                    rows += `<tr><td><strong>${item.id}</strong></td><td>${item.tanggal}</td><td>${item.petugas}</td><td>${item.jenis}</td><td>${item.nama}</td><td><a href="${item.fileUrl}" target="_blank" style="color:var(--primary); text-decoration:none;"><span class="material-symbols-outlined">description</span> Lihat PDF</a></td><td><span class="badge ${badgeClass}" id="statusLabel_${item.rowIdx}">${item.status}</span></td><td><select onchange="gantiStatus(${item.rowIdx}, this.value)" style="padding: 5px; font-size: 0.8rem;"><option value="" disabled selected>Ubah Status</option><option value="Menunggu">Menunggu</option><option value="Diproses">Diproses</option><option value="Selesai">Selesai</option></select></td></tr>`;
+                });
+                tbody.innerHTML = rows;
+            } catch(e) { showLoader(false); showToast(e.message, 'error'); }
+        }
+
+        async function gantiStatus(rowIdx, newStatus) {
+            if(!confirm(`Ubah status menjadi ${newStatus}?`)) return;
+            showLoader(true);
+            try {
+                const res = await apiCall('updateStatus', { rowIdx: rowIdx, status: newStatus });
+                showLoader(false); showToast(res.message, 'success');
+                document.getElementById(`statusLabel_${rowIdx}`).innerText = newStatus;
+                document.getElementById(`statusLabel_${rowIdx}`).className = `badge ${newStatus.toLowerCase()}`;
+            } catch(e) { showLoader(false); showToast(e.message, 'error'); }
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            const savedUser = localStorage.getItem('adminduk_user');
+            if(savedUser) { currentUser = JSON.parse(savedUser); updateUIAuth(); }
+            loadDashboard();
+        };
+    </script>
+</body>
 </html>
